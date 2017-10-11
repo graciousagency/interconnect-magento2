@@ -9,6 +9,7 @@
             "email": "justin@graciousstudios.nl"
         }
     ],
+    "minimum-stability": "stable",
     "require": {
         "magento/product-community-edition": ">=2.0"
     },
