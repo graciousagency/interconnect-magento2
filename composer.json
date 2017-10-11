@@ -1,6 +1,6 @@
 {
     "name": "graciousstudios/interconnect",
-    "description": "Webhook module for Magento2 that channels data to the Gracious Interconnect webservice which in turn formats and proxies the data to connected consumer services,
+    "description": "Webhook module for Magento2 that channels data to the Gracious Interconnect webservice which in turn formats and proxies the data to connected consumer services",
     "type": "magento2-module",
     "license": "Gracious Studios",
     "authors": [
