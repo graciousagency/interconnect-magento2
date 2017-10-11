@@ -1,15 +1,13 @@
 <?xml version="1.0"?>
-
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">
-                <item name="interconnect_synccustomer" xsi:type="object">Gracious\Interconnect\Console\SyncCustomer</item>
-                <item name="interconnect_syncorder" xsi:type="object">Gracious\Interconnect\Console\SyncOrder</item>
-                <item name="interconnect_syncquote" xsi:type="object">Gracious\Interconnect\Console\SyncQuote</item>
-                <item name="interconnect_syncsubscriber" xsi:type="object">Gracious\Interconnect\Console\SyncSubscriber</item>
+                <item name="interconnect_synccustomer" xsi:type="object">Gracious\Interconnect\Console\SyncCustomerCommand</item>
+                <item name="interconnect_syncorder" xsi:type="object">Gracious\Interconnect\Console\SyncOrderCommand</item>
+                <item name="interconnect_syncquote" xsi:type="object">Gracious\Interconnect\Console\SyncQuoteCommand</item>
+                <item name="interconnect_syncsubscriber" xsi:type="object">Gracious\Interconnect\Console\SyncSubscriberCommand</item>
             </argument>
         </arguments>
     </type>
-
 </config>

@@ -1,0 +1,67 @@
+<?php
+namespace Gracious\Interconnect\Console;
+
+use Magento\Framework\App\State;
+use Psr\Log\LoggerInterface as Logger;
+use Gracious\Interconnect\Http\Request\Client;
+use Symfony\Component\Console\Input\InputOption;
+use Gracious\Interconnect\Console\CommandAbstract;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Magento\Customer\Api\CustomerRepositoryInterface;
+use Gracious\Interconnect\Http\Request\Data\Customer\Factory as CustomerDataFactory;
+
+/**
+ * Class SyncCustomerCommand
+ * @package Gracious\Interconnect\Console
+ */
+class SyncCustomerCommand extends CommandAbstract
+{
+    /**
+     * @var CustomerRepositoryInterface
+     */
+    protected $customerRepository;
+
+    /**
+     * SyncCustomer constructor.
+     * @param State $state
+     * @param Logger $logger
+     * @param CustomerRepositoryInterface $customerRepository
+     */
+    public function __construct(State $state, Logger $logger,  Client $client, CustomerRepositoryInterface $customerRepository)
+    {
+        parent::__construct($state, $logger, $client);
+
+        $this->customerRepository = $customerRepository;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this->setName('interconnect:synccustomer')->setDescription('Send a customer to the Interconnect webservice');
+        $this->addOption('id', null, InputOption::VALUE_REQUIRED, 'customerId', null);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $customer = $this->customerRepository->getById($input->getOption('id'));
+
+        if($customer === null) {
+            $output->write('No customer found, aborting....');
+
+            return;
+        }
+
+        $output->write('Found customer, sending...');
+
+        $customerDataFactory = new CustomerDataFactory();
+        $requestData = $customerDataFactory->setupData($customer);
+        $this->logger->debug(json_encode($requestData));
+        $this->client->sendData($requestData, Client::ENDPOINT_CUSTOMER);
+    }
+}
