@@ -18,19 +18,15 @@ class Factory extends FactoryAbstract
      * @return string[]
      */
     public function setupData(Subscriber $subscriber) {
-        $subscriberId = $subscriber->getId();
+        $subscriberId = $subscriber->getId();var_dump($subscriberId);
         $prefixedSubscriberId = $this->generateEntityId($subscriberId, EntityType::NEWSLETTER_SUBSCRIPTION);
 
-        $data = [
+        return [
             'subscriptId'           => $prefixedSubscriberId,
             'emailAddress'          => $subscriber->getEmail(),
             'subscribe'             => $subscriber->isSubscribed(),
             'createdAt'             => Formatter::formatDateStringToIso8601($subscriber->getCreatedAt()),
             'updatedAt'             => Formatter::formatDateStringToIso8601($subscriber->getUpdatedAt())
         ];
-
-        $this->logger->notice('Subscriber data: ' . json_encode($data));
-
-        return $data;
     }
 }

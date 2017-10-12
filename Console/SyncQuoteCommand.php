@@ -4,6 +4,7 @@ namespace Gracious\Interconnect\Console;
 use Magento\Framework\App\State;
 use Psr\Log\LoggerInterface as Logger;
 use Magento\Quote\Model\QuoteRepository;
+use Gracious\Interconnect\Helper\Config;
 use Gracious\Interconnect\Http\Request\Client;
 use Magento\Catalog\Helper\Image as ImageHelper;
 use Symfony\Component\Console\Input\InputOption;
@@ -28,11 +29,12 @@ class SyncQuoteCommand extends CommandAbstract
      * @param State $state
      * @param Logger $logger
      * @param Client $client
+     * @param Config $config
      * @param QuoteRepository $quoteRepository
      */
-    public function __construct(State $state, Logger $logger, Client $client, QuoteRepository $quoteRepository)
+    public function __construct(State $state, Logger $logger, Client $client, Config $config, QuoteRepository $quoteRepository)
     {
-        parent::__construct($state, $logger, $client);
+        parent::__construct($state, $logger, $client, $config);
 
         $this->quoteRepository = $quoteRepository;
     }
@@ -51,6 +53,12 @@ class SyncQuoteCommand extends CommandAbstract
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if(!$this->config->isComplete()) {
+            $this->logger->error(__METHOD__.' :: Unable to rock and roll: module config values not configured (completely) in the backend. Aborting....');
+
+            return;
+        }
+
         $quote = $this->quoteRepository->get($input->getOption('id'));
 
         if($quote === null) {

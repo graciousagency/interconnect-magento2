@@ -3,6 +3,7 @@ namespace Gracious\Interconnect\Console;
 
 use Magento\Framework\App\State;
 use Psr\Log\LoggerInterface as Logger;
+use Gracious\Interconnect\Helper\Config;
 use Gracious\Interconnect\Http\Request\Client;
 use Symfony\Component\Console\Input\InputOption;
 use Gracious\Interconnect\Console\CommandAbstract;
@@ -26,11 +27,12 @@ class SyncCustomerCommand extends CommandAbstract
      * SyncCustomer constructor.
      * @param State $state
      * @param Logger $logger
+     * @param Config $config
      * @param CustomerRepositoryInterface $customerRepository
      */
-    public function __construct(State $state, Logger $logger,  Client $client, CustomerRepositoryInterface $customerRepository)
+    public function __construct(State $state, Logger $logger,  Client $client, Config $config, CustomerRepositoryInterface $customerRepository)
     {
-        parent::__construct($state, $logger, $client);
+        parent::__construct($state, $logger, $client, $config);
 
         $this->customerRepository = $customerRepository;
     }
@@ -49,6 +51,12 @@ class SyncCustomerCommand extends CommandAbstract
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if(!$this->config->isComplete()) {
+            $this->logger->error(__METHOD__.' :: Unable to rock and roll: module config values not configured (completely) in the backend. Aborting....');
+
+            return;
+        }
+
         $customer = $this->customerRepository->getById($input->getOption('id'));
 
         if($customer === null) {

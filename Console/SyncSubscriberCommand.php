@@ -1,9 +1,12 @@
 <?php
 namespace Gracious\Interconnect\Console;
 
+use Gracious\Interconnect\Helper\Config;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\App\State;
 use Magento\Newsletter\Model\Subscriber;
 use Gracious\Interconnect\Http\Request\Client;
+use Psr\Log\LoggerInterface as Logger;
 use Symfony\Component\Console\Input\InputOption;
 use Gracious\Interconnect\Console\CommandAbstract;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,6 +19,11 @@ use Gracious\Interconnect\Http\Request\Data\Subscriber\Factory as SubscriberFact
  */
 class SyncSubscriberCommand extends CommandAbstract
 {
+    public function __construct(State $state, Logger $logger, Client $client, Config $config)
+    {
+        parent::__construct($state, $logger, $client, $config);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -30,10 +38,17 @@ class SyncSubscriberCommand extends CommandAbstract
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /* @var $utilitySubscriber Subscriber */ $utilitySubscriber = ObjectManager::getInstance()->create(Subscriber::class);
-        $subscriber = $utilitySubscriber->loadByCustomerId($input->getOption('id'));
+        if(!$this->config->isComplete()) {
+            $this->logger->error(__METHOD__.' :: Unable to rock and roll: module config values not configured (completely) in the backend. Aborting....');
 
-        if($subscriber === null) {
+            return;
+        }
+
+        $subscriberId = $input->getOption('id');
+        $objectManager = ObjectManager::getInstance();
+        /* @var $subscriber Subscriber */ $subscriber = $objectManager->create(Subscriber::class)->load($subscriberId);
+
+        if($subscriber === null || $subscriber->getId() !== $subscriberId) {
             $output->write('Subscriber not found, all done here ....');
 
             return;

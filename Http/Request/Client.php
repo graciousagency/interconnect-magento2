@@ -80,9 +80,9 @@ class Client extends Base
             ->setRawBody(json_encode($data))
         ;
 
-//        $response = $this->send();
-//
-//        $this->processResponse($response);
+        $response = $this->send();
+
+        $this->processResponse($response);
     }
 
     /**

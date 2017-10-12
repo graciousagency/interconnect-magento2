@@ -26,7 +26,7 @@ class Factory extends FactoryAbstract
         $prefix = $customer->getPrefix();
         $customerId = $customer->getId();
 
-        $data = [
+        return [
             'customerId'                => $this->generateEntityId($customerId, EntityType::CUSTOMER),
             'firstName'                 => $customer->getFirstname(),
             'lastName'                  => Formatter::prefixLastName($customer->getLastname(), $prefix),
@@ -39,10 +39,6 @@ class Factory extends FactoryAbstract
             'createdAt'                 => Formatter::formatDateStringToIso8601($customer->getCreatedAt()),
             'updatedAt'                 => Formatter::formatDateStringToIso8601($customer->getUpdatedAt())
         ];
-
-        $this->logger->notice('Customer data: ' . json_encode($data));
-
-        return $data;
     }
 
     /**

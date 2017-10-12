@@ -2,10 +2,10 @@
 namespace Gracious\Interconnect\Observer;
 
 use Throwable;
+use Magento\Framework\Event\Observer;
 use Magento\Newsletter\Model\Subscriber;
 use Gracious\Interconnect\Observer\ObserverAbstract;
 use Gracious\Interconnect\Http\Request\Client as InterconnectClient;
-use Magento\Framework\Event\Observer as MagentoFrameworkEventObserver;
 use Gracious\Interconnect\Http\Request\Data\Subscriber\Factory as SubscriberDataFactory;
 
 /**
@@ -17,7 +17,7 @@ class NewsletterManageSaveCommitAfterEventObserver extends ObserverAbstract
     /**
      * {@inheritdoc}
      */
-    public function execute(MagentoFrameworkEventObserver $observer)
+    public function execute(Observer $observer)
     {
         if(!$this->config->isComplete()) {
             $this->logger->error(__METHOD__.' :: Unable to rock and roll: module config values not configured (completely) in the backend. Aborting....');
