@@ -48,7 +48,7 @@ class Factory extends FactoryAbstract
             'quoteId'       => $prefixedQuoteId,
             'incrementId'   => $order->getIncrementId(),
             'totalAmount'   => PriceCents::create($order->getBaseGrandTotal())->toInt(),
-            'quantity'      => $order->getTotalQtyOrdered(),
+            'quantity'      => (int)$order->getTotalQtyOrdered(),
             'couponCode'    => $order->getCouponCode(),
             'emailAddress'  => $order->getCustomerEmail(),
             'updatedAt'     => Formatter::formatDateStringToIso8601($order->getUpdatedAt()),
@@ -73,7 +73,7 @@ class Factory extends FactoryAbstract
 
             if($product !== null) { // Don't think this can/should happen but without in-depth Magento knowledge concerning how it works now or may work in the future let's apply some redundancy here...
                 $productTypeId = $product->getTypeId();
-                $this->logger->debug('$productTypeId : '.$productTypeId);
+//                $this->logger->debug('$productTypeId : '.$productTypeId);
 
                 switch ($productTypeId) {
                     case ProductType::SIMPLE:
@@ -104,7 +104,6 @@ class Factory extends FactoryAbstract
             'itemId'            => $this->generateEntityId($orderItem->getItemId(), EntityType::ORDER_ITEM),
             'orderId'           => $this->generateEntityId($order->getId(),EntityType::ORDER),
             'productId'         => $this->generateEntityId($product->getId(),EntityType::PRODUCT),
-            'incrementId'       => null,
             'productName'       => $product->getName(),
             'sku'               => $product->getSku(),
             'category'          => $this->getCategoryNameByProduct($product),
