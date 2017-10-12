@@ -9,10 +9,6 @@
             <resource>Gracious_Interconnect::config</resource>
             <group id="settings" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General</label>
-                <field id="dropdown_example" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Dropdown with custom source model example</label>
-                    <source_model>Gracious\Interconnect\Model\Config\Source\Custom</source_model>
-                </field>
                 <field id="baseurl" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Server base URL</label>
                 </field>
