@@ -2,6 +2,7 @@
 namespace Gracious\Interconnect\Http\Request\Data\Customer;
 
 use Exception;
+use Magento\Customer\Model\Customer;
 use Magento\Newsletter\Model\Subscriber;
 use Magento\Customer\Model\Data\Address;
 use Magento\Framework\App\ObjectManager;
@@ -9,7 +10,7 @@ use Gracious\Interconnect\Support\Formatter;
 use Gracious\Interconnect\Support\EntityType;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
-use \Magento\Customer\Api\Data\CustomerInterface as Customer;
+use Magento\Customer\Api\Data\CustomerInterface as CustomerContract;
 
 /**
  * Class Factory
@@ -19,10 +20,14 @@ class Factory extends FactoryAbstract
 {
 
     /**
-     * @param Customer $customer
+     * @param CustomerContract|Customer $customer
      * @return array
      */
-    public function setupData(Customer $customer) {
+    public function setupData($customer) {
+        if(!($customer instanceof Customer) && !($customer instanceof CustomerContract)) {
+            throw new Exception('Invalid argument supplied; expected instance of '.Customer::class.' or '.CustomerContract::class);
+        }
+
         $prefix = $customer->getPrefix();
         $customerId = $customer->getId();
 

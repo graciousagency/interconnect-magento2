@@ -4,6 +4,7 @@ namespace Gracious\Interconnect\Observer;
 use Throwable;
 use Magento\Customer\Model\Customer;
 use Magento\Framework\Event\Observer;
+use Gracious\Interconnect\Support\ModelInspector;
 use Gracious\Interconnect\Observer\ObserverAbstract;
 use Gracious\Interconnect\Http\Request\Client as InterconnectClient;
 use Gracious\Interconnect\Http\Request\Data\Customer\Factory as CustomerDataFactory;
@@ -27,6 +28,13 @@ class CustomerSaveCommitAfterEventObserver extends ObserverAbstract
         }
 
         /* @var $customer Customer */ $customer = $observer->getEvent()->getData('customer');
+        $modelInspector = new ModelInspector($customer);
+
+        if(!$modelInspector->isNew()) {
+            $this->logger->notice('Customer(id='.$customer->getId().') is not new, aborting...');
+
+            return;
+        }
         $customerDataFactory = new CustomerDataFactory();
 
         // Try/catch because we don't want to disturb critical processes such as the checkout
