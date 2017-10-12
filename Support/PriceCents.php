@@ -27,7 +27,7 @@ class PriceCents
      */
     public function toInt()
     {
-        return (int)100 * $this->price;
+        return (int)(100 * $this->price);
     }
 
     /**
