@@ -2,7 +2,6 @@
 namespace Gracious\Interconnect\Http\Request\Data\Customer;
 
 use Exception;
-use Magento\Customer\Model\Customer;
 use Magento\Newsletter\Model\Subscriber;
 use Magento\Customer\Model\Data\Address;
 use Magento\Framework\App\ObjectManager;
@@ -10,6 +9,7 @@ use Gracious\Interconnect\Support\Formatter;
 use Gracious\Interconnect\Support\EntityType;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
+use \Magento\Customer\Api\Data\CustomerInterface as Customer;
 
 /**
  * Class Factory

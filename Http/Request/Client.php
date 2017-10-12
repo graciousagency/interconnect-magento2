@@ -96,7 +96,7 @@ class Client extends Base
         if(!$success) {
             $this->logger->error('Response status = '.$statusCode.', response = '.(string)$response);
             
-            throw new Exception('Error making request with http status code :'.$statusCode.' and response '.(string)$response);
+            throw new Exception('Error making request to \''.$request->getUriString().'\' with http status code :'.$statusCode.' and response '.(string)$response);
         }
     }
 }
