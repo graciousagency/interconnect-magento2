@@ -50,6 +50,7 @@ class Factory extends FactoryAbstract
             'totalAmount'   => PriceCents::create($order->getBaseGrandTotal())->toInt(),
             'quantity'      => $order->getTotalQtyOrdered(),
             'couponCode'    => $order->getCouponCode(),
+            'emailAddress'  => $order->getCustomerEmail(),
             'updatedAt'     => Formatter::formatDateStringToIso8601($order->getUpdatedAt()),
             'createdAt'     => Formatter::formatDateStringToIso8601($order->getCreatedAt()),
             'orderRows'     => $this->getOrderRows($order)
