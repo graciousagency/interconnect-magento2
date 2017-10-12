@@ -38,7 +38,7 @@ class Factory extends FactoryAbstract
         return [
             'quoteId'           => $this->generateEntityId($quote->getId(), EntityType::QUOTE),
             'totalAmount'       => PriceCents::create($quote->getBaseGrandTotal())->toInt(),
-            'quantity'          => $quote->getItemsQty(),
+            'quantity'          => (int)$quote->getItemsQty(),
             'couponCode'        => $quote->getCouponCode(),
             'updatedAt'         => Formatter::formatDateStringToIso8601($quote->getUpdatedAt()),
             'createdAt'         => Formatter::formatDateStringToIso8601($quote->getCreatedAt()),
