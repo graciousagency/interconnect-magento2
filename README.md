@@ -5,9 +5,9 @@ is Copernica. More consumers will be connected in the future.
 Event data is automatically channeled to the web service but the module also comes with 4 console commands to 
 synchronize data manually. These console commands are:
 - 'interconnect:synccustomer' :     Synchronizes a customer by providing the --id={customerId} parameter
-- 'interconnect:syncorder' :        Synchronizes an order by providing the --id={customerId} parameter
-- 'interconnect:syncquote' :        Synchronizes a quote by providing the --id={customerId} parameter
-- 'interconnect:syncsubscriber' :   Synchronizes a subscriber by providing the --id={customerId} parameter
+- 'interconnect:syncorder' :        Synchronizes an order by providing the --id={orderId} parameter
+- 'interconnect:syncquote' :        Synchronizes a quote by providing the --id={quoteId} parameter
+- 'interconnect:syncsubscriber' :   Synchronizes a subscriber by providing the --id={subscriberId} parameter
 
 To get the module up and running:
 - Install the module using composer. It will be installed in the vendor folder.
