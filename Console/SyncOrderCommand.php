@@ -48,6 +48,7 @@ class SyncOrderCommand extends CommandAbstract
 
     /**
      * {@inheritdoc}
+     * @todo Validate --id option as integer
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

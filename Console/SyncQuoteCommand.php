@@ -41,6 +41,7 @@ class SyncQuoteCommand extends CommandAbstract
 
     /**
      * {@inheritdoc}
+     * @todo Validate --id option as integer
      */
     protected function configure()
     {

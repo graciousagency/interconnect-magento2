@@ -35,6 +35,7 @@ class CustomerSaveCommitAfterEventObserver extends ObserverAbstract
 
             return;
         }
+
         $customerDataFactory = new CustomerDataFactory();
 
         // Try/catch because we don't want to disturb critical processes such as the checkout
