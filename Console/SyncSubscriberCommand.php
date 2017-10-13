@@ -55,7 +55,7 @@ class SyncSubscriberCommand extends CommandAbstract
             return;
         }
 
-        $output->write('Found subscriber, sending...');
+        $output->write('Found subscriber \''.$subscriber->getEmail().'\', sending...');
 
         $subscriberFactory = new SubscriberFactory();
         $requestData = $subscriberFactory->setupData($subscriber);

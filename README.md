@@ -15,7 +15,11 @@ To get the module up and running:
 installation. This will install the module.
 - Run "./bin/magento setup:di:compile" (without the quotes) from the commandline in the root folder of the Magento 
 installation. This will configure the dependency injection.
-- In the backend of the webshop. go to Stores > Configuration from the main menu and click on 'General Settings' 
+- In the backend of the webshop, go to Stores > Configuration from the main menu and click on 'General Settings' 
 under 'Interconnect' in the configuration menu. You will have to enter the url for the Interconnect webservice here and
 provide a prefix for your application. Let's say you web shop is called 'ProShop'; your prefix could be 'PS' for 
 example. Now click 'Save'. The module is now configured.
+
+In order to use this module completely you will need to have an account for the Gracious Interconnect webservice. 
+Please contact info@graciousstudios.nl for more information, further integrations and other possibilities. Use 
+'Interconnect' for your email subject.
