@@ -4,7 +4,6 @@ namespace Gracious\Interconnect\Observer;
 use Throwable;
 use Magento\Sales\Model\Order;
 use Magento\Framework\Event\Observer;
-use Gracious\Interconnect\Support\ModelInspector;
 use Gracious\Interconnect\Observer\ObserverAbstract;
 use Gracious\Interconnect\Http\Request\Client as InterconnectClient;
 use Gracious\Interconnect\Http\Request\Data\Order\Factory as OrderDataFactory;
@@ -27,20 +26,13 @@ class OrderSaveCommitAfterEventObserver extends ObserverAbstract
         }
 
         /** * @var $order Order */ $order = $observer->getOrder();
-        $modelInspector = new ModelInspector($order);
-
-        if(!$modelInspector->isNew()) {
-            $this->logger->debug('Aborting send process; this order is not a new order (id '.$order->getId().') ....');
-
-            return;
-        }
-
         $orderDataFactory = new OrderDataFactory();
 
         try {
             $requestData = $orderDataFactory->setupData($order);
         }catch (Throwable $exception) {
-            $this->logger->error('Failed to prepare the order data. *** MESSAGE ***:  '.$exception->getMessage().',  *** TRACE ***: '.$exception->getTraceAsString());
+//            $this->logger->error('Failed to prepare the order data. *** MESSAGE ***:  '.$exception->getMessage().',  *** TRACE ***: '.$exception->getTraceAsString());
+            $this->logger->error('Failed to prepare the order data. *** MESSAGE ***:  '.$exception->getMessage());
 
             return;
         }
@@ -51,7 +43,12 @@ class OrderSaveCommitAfterEventObserver extends ObserverAbstract
         try {
             $this->client->sendData($requestData, InterconnectClient::ENDPOINT_ORDER);
         }catch (Throwable $exception) {
-            $this->logger->error('Failed to send order. *** MESSAGE ***: '.$exception->getMessage().', *** TRACE ***: '.$exception->getTraceAsString());
+//            $this->logger->error('Failed to send order. *** MESSAGE ***: '.$exception->getMessage().', *** TRACE ***: '.$exception->getTraceAsString());
+            $this->logger->error('Failed to send order. *** MESSAGE ***: '.$exception->getMessage());
+
+            return;
         }
+
+        $this->logger->info(__METHOD__.' :: Order sent to Interconnect ('.$order->getId().')');
     }
 }

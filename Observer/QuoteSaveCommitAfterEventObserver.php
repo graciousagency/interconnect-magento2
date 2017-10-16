@@ -12,6 +12,8 @@ use Gracious\Interconnect\Http\Request\Data\Quote\Factory as QuoteDataFactory;
  * Class QuoteObserver
  * @package Gracious\Interconnect\Observer
  * Sends a quote to our webservice on create or update
+ *
+ * THIS OBSERVER IS CURRENTLY NOT ACTIVE (SEE: EVENTS.XML) BECAUSE IT'S NOT IMPLEMENTED IN THE INTERCONNECT WEB SERVICE YET.
  */
 class QuoteSaveCommitAfterEventObserver extends ObserverAbstract
 {
@@ -33,7 +35,8 @@ class QuoteSaveCommitAfterEventObserver extends ObserverAbstract
         try{
             $requestData = $quoteDataFactory->setupData($quote);
         }catch (Throwable $exception) {
-            $this->logger->error('Failed to prepare the quote data. *** MESSAGE ***:  '.$exception->getMessage().',  *** TRACE ***: '.$exception->getTraceAsString());
+//            $this->logger->error('Failed to prepare the quote data. *** MESSAGE ***:  '.$exception->getMessage().',  *** TRACE ***: '.$exception->getTraceAsString());
+            $this->logger->error('Failed to prepare the quote data. *** MESSAGE ***:  '.$exception->getMessage());
 
             return;
         }
@@ -44,7 +47,12 @@ class QuoteSaveCommitAfterEventObserver extends ObserverAbstract
         try {
             $this->client->sendData($requestData, InterconnectClient::ENDPOINT_QUOTE);
         }catch(Throwable $exception) {
-            $this->logger->error('Failed to send quote. *** MESSAGE ***: '.$exception->getMessage().',  *** TRACE ***:'.$exception->getTraceAsString());
+//            $this->logger->error('Failed to send quote. *** MESSAGE ***: '.$exception->getMessage().',  *** TRACE ***:'.$exception->getTraceAsString());
+            $this->logger->error('Failed to send quote. *** MESSAGE ***: '.$exception->getMessage());
+
+            return;
         }
+
+        $this->logger->info(__METHOD__.' :: Quote sent to Interconnect ('.$quote->getId().')');
     }
 }

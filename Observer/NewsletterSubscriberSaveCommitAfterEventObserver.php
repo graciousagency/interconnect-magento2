@@ -12,7 +12,7 @@ use Gracious\Interconnect\Http\Request\Data\Subscriber\Factory as SubscriberData
  * Class NewsletterManageSaveEventObserver
  * @package Gracious\Interconnect\Observer
  */
-class NewsletterManageSaveCommitAfterEventObserver extends ObserverAbstract
+class NewsletterSubscriberSaveCommitAfterEventObserver extends ObserverAbstract
 {
     /**
      * {@inheritdoc}
@@ -31,7 +31,8 @@ class NewsletterManageSaveCommitAfterEventObserver extends ObserverAbstract
         try {
             $requestData = $subscriberDataFactory->setupData($subscriber);
         }catch (Throwable $exception) {
-            $this->logger->error('Failed to prepare the newsletter subscriber data. *** MESSAGE ***:  '.$exception->getMessage().',  *** TRACE ***: '.$exception->getTraceAsString());
+//            $this->logger->error('Failed to prepare the newsletter subscriber data. *** MESSAGE ***:  '.$exception->getMessage().',  *** TRACE ***: '.$exception->getTraceAsString());
+            $this->logger->error('Failed to prepare the newsletter subscriber data. *** MESSAGE ***:  '.$exception->getMessage());
 
             return;
         }
@@ -41,7 +42,12 @@ class NewsletterManageSaveCommitAfterEventObserver extends ObserverAbstract
         try {
             $this->client->sendData($requestData, InterconnectClient::ENDPOINT_NEWSLETTER_SUBSCRIBER);
         }catch(Throwable $exception) {
-            $this->logger->error('Failed to send the newsletter subscriber data. *** MESSAGE ***: '.$exception->getMessage().',  *** TRACE ***:'.$exception->getTraceAsString());
+//            $this->logger->error('Failed to send the newsletter subscriber data. *** MESSAGE ***: '.$exception->getMessage().',  *** TRACE ***:'.$exception->getTraceAsString());
+            $this->logger->error('Failed to send the newsletter subscriber data. *** MESSAGE ***: '.$exception->getMessage());
+
+            return;
         }
+
+        $this->logger->info(__METHOD__.' :: Subscriber sent to Interconnect ('.$subscriber->getId().')');
     }
 }

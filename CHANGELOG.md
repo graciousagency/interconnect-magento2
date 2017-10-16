@@ -1,7 +1,7 @@
-1.0.0 : 2017/10/13
+**1.0.0** : 2017/10/13
 - First release.
 
-1.0.1 : 2017/10/16
+**1.0.1** : 2017/10/16
 - Delegated order item data formatting to separate factory class.
 - Disabled quote event listener (next sprint feature).
 - Added README.md.

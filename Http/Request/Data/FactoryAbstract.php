@@ -40,7 +40,7 @@ abstract class FactoryAbstract
      * The exception throwing is necessary because the id must be unique and thus complete. We really want to let
      * the calling class know when that fails.
      */
-    protected function generateEntityId($id, $entityPrefix) {
+    protected final function generateEntityId($id, $entityPrefix) {
         if($id === null || trim($id) == '') {
             // Throw an exception because formatting a unique handle is a critical step
             throw new Exception('Unable to format prefixed ID: invalid entity id!');

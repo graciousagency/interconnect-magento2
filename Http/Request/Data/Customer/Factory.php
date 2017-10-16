@@ -38,7 +38,7 @@ class Factory extends FactoryAbstract
             'emailAddress'              => $customer->getEmail(),
             'gender'                    => $customer->getGender(),
             'birthDate'                 => $customer->getDob(),
-            'subscribe'                 => $this->isCustomerSubscribedToNewsletter($customerId),
+            'optIn'                     => $this->isCustomerSubscribedToNewsletter($customerId),
             'billingAddress'            => $this->getAddress($customer->getDefaultBilling()),
             'shippingAddress'           => $this->getAddress($customer->getDefaultShipping()),
             'createdAt'                 => Formatter::formatDateStringToIso8601($customer->getCreatedAt()),

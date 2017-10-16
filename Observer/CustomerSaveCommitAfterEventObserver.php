@@ -4,18 +4,17 @@ namespace Gracious\Interconnect\Observer;
 use Throwable;
 use Magento\Customer\Model\Customer;
 use Magento\Framework\Event\Observer;
-use Gracious\Interconnect\Support\ModelInspector;
 use Gracious\Interconnect\Observer\ObserverAbstract;
 use Gracious\Interconnect\Http\Request\Client as InterconnectClient;
 use Gracious\Interconnect\Http\Request\Data\Customer\Factory as CustomerDataFactory;
 
 /**
- * Class CustomerObserver
+ * Class CustomerRegisterSuccessEventObserver
  * @package Gracious\Interconnect\Observer
- * Handles an event following a create or update event for customer data
  */
 class CustomerSaveCommitAfterEventObserver extends ObserverAbstract
 {
+
     /**
      * {@inheritdoc}
      */
@@ -28,32 +27,30 @@ class CustomerSaveCommitAfterEventObserver extends ObserverAbstract
         }
 
         /* @var $customer Customer */ $customer = $observer->getEvent()->getData('customer');
-        $modelInspector = new ModelInspector($customer);
-
-        if(!$modelInspector->isNew()) {
-            $this->logger->notice('Customer(id='.$customer->getId().') is not new, aborting...');
-
-            return;
-        }
-
         $customerDataFactory = new CustomerDataFactory();
 
         // Try/catch because we don't want to disturb critical processes such as the checkout
         try{
-            $data = $customerDataFactory->setupData($customer);
+            $requestData = $customerDataFactory->setupData($customer);
         }catch (Throwable $exception) {
-            $this->logger->error('Failed to prepare the customer data. *** MESSAGE ***:  '.$exception->getMessage().',  *** TRACE ***:'.$exception->getTraceAsString());
+//            $this->logger->error('Failed to prepare the customer data. *** MESSAGE ***:  '.$exception->getMessage().',  *** TRACE ***:'.$exception->getTraceAsString());
+            $this->logger->error('Failed to prepare the customer data. *** MESSAGE ***:  '.$exception->getMessage());
 
             return;
         }
 
-        $this->logger->notice('Customer data: ' . json_encode($data));
+        $this->logger->notice('Customer data: ' . json_encode($requestData));
 
         // Try/catch because we don't want to disturb critical processes such as the checkout
         try {
-            $this->client->sendData($data, InterconnectClient::ENDPOINT_CUSTOMER);
+            $this->client->sendData($requestData, InterconnectClient::ENDPOINT_CUSTOMER);
         }catch(Throwable $exception) {
-            $this->logger->error('Failed to send customer. *** MESSAGE ***: '.$exception->getMessage().', *** TRACE ***: '.$exception->getTraceAsString());
+//            $this->logger->error('Failed to send customer. *** MESSAGE ***: '.$exception->getMessage().', *** TRACE ***: '.$exception->getTraceAsString());
+            $this->logger->error('Failed to send customer. *** MESSAGE ***: '.$exception->getMessage());
+
+            return;
         }
+
+        $this->logger->info(__METHOD__.' :: Customer sent to Interconnect ('.$customer->getId().')');
     }
 }

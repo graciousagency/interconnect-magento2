@@ -79,7 +79,7 @@ class Client extends Base
             ->setHeaders(['Content-Type' => 'application/json'])
             ->setRawBody(json_encode($data))
         ;
-
+        $this->logger->debug(__METHOD__.':: Posting to \''.$this->baseUrl.'/'.$endPoint.'\'...');
         $response = $this->send();
 
         $this->processResponse($response);

@@ -1,12 +1,12 @@
 <?php
 namespace Gracious\Interconnect\Console;
 
+use Magento\Framework\App\State;
+use Psr\Log\LoggerInterface as Logger;
+use Magento\Newsletter\Model\Subscriber;
 use Gracious\Interconnect\Helper\Config;
 use Magento\Framework\App\ObjectManager;
-use Magento\Framework\App\State;
-use Magento\Newsletter\Model\Subscriber;
 use Gracious\Interconnect\Http\Request\Client;
-use Psr\Log\LoggerInterface as Logger;
 use Symfony\Component\Console\Input\InputOption;
 use Gracious\Interconnect\Console\CommandAbstract;
 use Symfony\Component\Console\Input\InputInterface;

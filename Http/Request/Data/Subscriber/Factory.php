@@ -24,7 +24,7 @@ class Factory extends FactoryAbstract
         return [
             'subscriptionId'        => $prefixedSubscriberId,
             'emailAddress'          => $subscriber->getEmail(),
-            'subscribe'             => $subscriber->isSubscribed(),
+            'optIn'                 => $subscriber->isSubscribed(),
             'createdAt'             => Formatter::formatDateStringToIso8601($subscriber->getCreatedAt()),
             'updatedAt'             => Formatter::formatDateStringToIso8601($subscriber->getUpdatedAt())
         ];
