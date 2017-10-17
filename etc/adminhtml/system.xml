@@ -12,8 +12,11 @@
                 <field id="baseurl" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Server base URL</label>
                 </field>
-                <field id="prefix" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="prefix" translate="label" type="text" sortOrder="21" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>prefix</label>
+                </field>
+                <field id="apikey" translate="label" type="text" sortOrder="22" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Api key</label>
                 </field>
             </group>
         </section>

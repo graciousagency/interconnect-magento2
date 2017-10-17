@@ -73,10 +73,13 @@ class Client extends Base
         if($this->baseUrl === null){
             throw new Exception('Unable to make request: base url not set');
         }
-
+      
         $this->setMethod(Request::METHOD_POST)
             ->setUri($this->baseUrl.'/'.$endPoint)
-            ->setHeaders(['Content-Type' => 'application/json'])
+            ->setHeaders([
+                'Content-Type'  => 'application/json',
+                'X-Secret'      => $this->helperConfig->getApiKey()
+            ])
             ->setRawBody(json_encode($data))
         ;
         $this->logger->debug(__METHOD__.':: Posting to \''.$this->baseUrl.'/'.$endPoint.'\'...');
