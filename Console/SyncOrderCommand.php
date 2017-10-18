@@ -1,6 +1,7 @@
 <?php
 namespace Gracious\Interconnect\Console;
 
+use Magento\Sales\Model\Order;
 use Magento\Framework\App\State;
 use Magento\Sales\Model\OrderRepository;
 use Magento\Framework\App\ObjectManager;
@@ -9,14 +10,18 @@ use Gracious\Interconnect\Reporting\Logger;
 use Gracious\Interconnect\Http\Request\Client;
 use Magento\Catalog\Helper\Image as ImageHelper;
 use Symfony\Component\Console\Input\InputOption;
+use Gracious\Interconnect\Reporting\OutputAdapter;
 use Gracious\Interconnect\Console\CommandAbstract;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Gracious\Interconnect\Generic\Behaviours\SendsOrder;
 use Gracious\Interconnect\Http\Request\Data\Order\Factory as OrderDataFactory;
 
 
 class SyncOrderCommand extends CommandAbstract
 {
+    use SendsOrder;
+
     /**
      * @var OrderRepository
      */
@@ -58,14 +63,12 @@ class SyncOrderCommand extends CommandAbstract
             return;
         }
 
-        $order = $this->orderRepository->get($input->getOption('id'));
+        /* @var $order Order */ $order = $this->orderRepository->get($input->getOption('id'));
 
         if($order === null) {
             $output->writeln('No order found, aborting....');
         }
 
-        $orderDataFactory = new OrderDataFactory();
-        $requestData = $orderDataFactory->setupData($order);
-        $this->client->sendData($requestData, Client::ENDPOINT_ORDER);
+        $this->sendOrder($order, new OutputAdapter($output), $this->client);
     }
 }

@@ -13,6 +13,7 @@ use Gracious\Interconnect\Support\ProductType;
 use Magento\Catalog\Helper\Image as ImageHelper;
 use Magento\Sales\Model\Order\Item as OrderItem;
 use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
+use Gracious\Interconnect\Http\Request\Data\Customer\Factory as CustomerFactory;
 use Gracious\Interconnect\Http\Request\Data\Order\Item\Factory as OrderItemFactory;
 
 /**
@@ -41,6 +42,15 @@ class Factory extends FactoryAbstract
      * @return array
      */
     public function setupData(Order $order) {
+        $customerFactory = new CustomerFactory();
+        $customerData = null;
+
+        if($order->getCustomerIsGuest()) {
+            $customerData = $customerFactory->setUpAnonymousCustomerDataFromOrder($order);
+        }else {
+            $customerData = $customerFactory->setupData($order->getCustomer());
+        }
+
         $quoteId = $order->getQuoteId();
         $prefixedQuoteId = $quoteId !== null ? $this->generateEntityId($quoteId,EntityType::QUOTE) : null;
         $orderItemFactory = new OrderItemFactory();
@@ -53,6 +63,7 @@ class Factory extends FactoryAbstract
             'quantity'              => (int)$order->getTotalQtyOrdered(),
             'couponCode'            => $order->getCouponCode(),
             'emailAddress'          => $order->getCustomerEmail(),
+            'customer'              => $customerData,
             'orderedAtISO8601'      => Formatter::formatDateStringToIso8601($order->getCreatedAt()),
             'updatedAt'             => Formatter::formatDateStringToIso8601($order->getUpdatedAt()),
             'createdAt'             => Formatter::formatDateStringToIso8601($order->getCreatedAt()),

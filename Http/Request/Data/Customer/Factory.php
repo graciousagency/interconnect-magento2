@@ -2,6 +2,7 @@
 namespace Gracious\Interconnect\Http\Request\Data\Customer;
 
 use Exception;
+use Magento\Sales\Model\Order;
 use Magento\Customer\Model\Customer;
 use Magento\Newsletter\Model\Subscriber;
 use Magento\Customer\Model\Data\Address;
@@ -11,6 +12,7 @@ use Gracious\Interconnect\Support\EntityType;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
 use Magento\Customer\Api\Data\CustomerInterface as CustomerContract;
+use Gracious\Interconnect\Http\Request\Data\Address\Factory as AddressFactory;
 
 /**
  * Class Factory
@@ -41,8 +43,33 @@ class Factory extends FactoryAbstract
             'optIn'                     => $this->isCustomerSubscribedToNewsletter($customerId),
             'billingAddress'            => $this->getAddress($customer->getDefaultBilling()),
             'shippingAddress'           => $this->getAddress($customer->getDefaultShipping()),
+            'isAnonymous'               => false,
             'createdAt'                 => Formatter::formatDateStringToIso8601($customer->getCreatedAt()),
             'updatedAt'                 => Formatter::formatDateStringToIso8601($customer->getUpdatedAt())
+        ];
+    }
+
+    /**
+     * @param Order $order
+     * @return array
+     */
+    public function setUpAnonymousCustomerDataFromOrder(Order $order) {
+        $billingAddress = $order->getBillingAddress();
+        $shippingAddress = $order->getShippingAddress();
+
+        return [
+            'customerId'                => null,
+            'firstName'                 => $billingAddress->getFirstname(),
+            'lastName'                  => Formatter::prefixLastName($billingAddress->getLastname(), $billingAddress->getPrefix()),
+            'emailAddress'              => $billingAddress->getEmail(),
+            'gender'                    => null,
+            'birthDate'                 => null,
+            'optIn'                     => null,
+            'billingAddress'            => $this->setupAddressData($billingAddress),
+            'shippingAddress'           => $this->setupAddressData($shippingAddress),
+            'isAnonymous'               => true,
+            'createdAt'                 => Formatter::formatDateStringToIso8601($order->getCreatedAt()),
+            'updatedAt'                 => Formatter::formatDateStringToIso8601($order->getUpdatedAt())
         ];
     }
 
@@ -65,18 +92,21 @@ class Factory extends FactoryAbstract
             return null;
         }
 
-        if(!($address instanceof Address)) {
+        return $this->setupAddressData($address);
+    }
+
+    /**
+     * @param Address|\Magento\Sales\Api\Data\OrderAddressInterface|\Magento\Customer\Api\Data\AddressInterface $address
+     * @return array|null
+     */
+    protected function setupAddressData($address) {
+        if($address === null) {
             return null;
         }
 
-        return [
-            'addressId'     => $this->generateEntityId($addressId, EntityType::ADDRESS),
-            'street'        => $address->getStreet(),
-            'zipcode'       => $address->getPostcode(),
-            'city'          => $address->getCity(),
-            'country'       => $address->getCountryId(),
-            'company'       => $address->getCompany()
-        ];
+        $addressFactory = new AddressFactory();
+
+        return $addressFactory->setupData($address);
     }
 
     /**

@@ -10,9 +10,14 @@
 - Changed some property names in factories that didn't match the ones in the Interconnect web service.
 
 **1.1.0** : 2017/10/17
-- Added api key input for backend store configuration and implemented this is the REST client.
+- Added api key input for backend store configuration and implemented this in the REST client.
 
 **1.1.1** : 2017/10/18
 - Fixed problem with events firing multiple times by sending data from controller overrides and listening to different
 events.
-- Added custom logger for notice messages so they don't end up with all the other logs.
+- Added custom logger for notice messages so they don't end up with all the other logs lines.
+
+**1.2.0** : 2017/10/18
+- Delegated address data formatting to separate factory class.
+- Delegated sending order to a trait to prevent repeating code in console command and event observer.
+- Added customer data to order (specifically useful for anonymous orders that weren't preceded by a customer registration).
