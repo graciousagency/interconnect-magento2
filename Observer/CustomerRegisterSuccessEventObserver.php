@@ -12,7 +12,7 @@ use Gracious\Interconnect\Http\Request\Data\Customer\Factory as CustomerDataFact
  * Class CustomerRegisterSuccessEventObserver
  * @package Gracious\Interconnect\Observer
  */
-class CustomerSaveCommitAfterEventObserver extends ObserverAbstract
+class CustomerRegisterSuccessEventObserver extends ObserverAbstract
 {
 
     /**
@@ -39,7 +39,7 @@ class CustomerSaveCommitAfterEventObserver extends ObserverAbstract
             return;
         }
 
-        $this->logger->notice('Customer data: ' . json_encode($requestData));
+        $this->logger->notice(__METHOD__.'Customer data: ' . json_encode($requestData));
 
         // Try/catch because we don't want to disturb critical processes such as the checkout
         try {

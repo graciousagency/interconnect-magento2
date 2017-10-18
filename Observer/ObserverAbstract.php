@@ -3,8 +3,8 @@ namespace Gracious\Interconnect\Observer;
 
 use Exception;
 use Magento\Catalog\Helper\Image;
-use Psr\Log\LoggerInterface as Logger;
 use Gracious\Interconnect\Helper\Config;
+use Gracious\Interconnect\Reporting\Logger;
 use Gracious\Interconnect\Support\Formatter;
 use Gracious\Interconnect\Http\Request\Client;
 use Magento\Framework\Event\ObserverInterface;

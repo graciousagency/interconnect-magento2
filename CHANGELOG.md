@@ -11,3 +11,8 @@
 
 **1.1.0** : 2017/10/17
 - Added api key input for backend store configuration and implemented this is the REST client.
+
+**1.1.1** : 2017/10/18
+- Fixed problem with events firing multiple times by sending data from controller overrides and listening to different
+events.
+- Added custom logger for notice messages so they don't end up with all the other logs.

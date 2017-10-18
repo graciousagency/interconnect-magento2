@@ -4,6 +4,8 @@ namespace Gracious\Interconnect\Observer;
 use Throwable;
 use Magento\Sales\Model\Order;
 use Magento\Framework\Event\Observer;
+use Magento\Framework\App\ObjectManager;
+use Magento\Sales\Model\OrderRepository;
 use Gracious\Interconnect\Observer\ObserverAbstract;
 use Gracious\Interconnect\Http\Request\Client as InterconnectClient;
 use Gracious\Interconnect\Http\Request\Data\Order\Factory as OrderDataFactory;
@@ -12,7 +14,7 @@ use Gracious\Interconnect\Http\Request\Data\Order\Factory as OrderDataFactory;
  * Class OrderObserver
  * @package Gracious\Interconnect\Observer
  */
-class OrderSaveCommitAfterEventObserver extends ObserverAbstract
+class CheckoutOnePageControllerSuccessActionEventObserver extends ObserverAbstract
 {
     /**
      * {@inheritdoc}
@@ -25,7 +27,15 @@ class OrderSaveCommitAfterEventObserver extends ObserverAbstract
             return;
         }
 
-        /** * @var $order Order */ $order = $observer->getOrder();
+        $orderIds = $observer->getDataByKey('order_ids');
+
+        if(!is_array($orderIds) || empty($orderIds)) {
+            $this->logger->alert(__METHOD__.' :: Expected to get an order id but none was provided! Aborting....');
+            return;
+        }
+
+        $orderId = $orderIds[0];
+        $order = $orderRepository = ObjectManager::getInstance()->create(OrderRepository::class)->get($orderId);
         $orderDataFactory = new OrderDataFactory();
 
         try {

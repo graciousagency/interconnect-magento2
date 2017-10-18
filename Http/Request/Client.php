@@ -6,9 +6,9 @@ use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\Http\Client as Base;
 use Gracious\Interconnect\Helper;
-use Psr\Log\LoggerInterface as Logger;
 use Magento\Framework\App\ObjectManager;
 use Gracious\Interconnect\Helper\Config;
+use Gracious\Interconnect\Reporting\Logger;
 
 class Client extends Base
 {
@@ -73,16 +73,19 @@ class Client extends Base
         if($this->baseUrl === null){
             throw new Exception('Unable to make request: base url not set');
         }
-      
+
+        $json = json_encode($data);
         $this->setMethod(Request::METHOD_POST)
             ->setUri($this->baseUrl.'/'.$endPoint)
             ->setHeaders([
                 'Content-Type'  => 'application/json',
                 'X-Secret'      => $this->helperConfig->getApiKey()
             ])
-            ->setRawBody(json_encode($data))
+            ->setRawBody($json)
         ;
-        $this->logger->debug(__METHOD__.':: Posting to \''.$this->baseUrl.'/'.$endPoint.'\'...');
+
+        $this->logger->info(str_repeat('*****', 30));
+        $this->logger->info(__METHOD__.':: Posting to \''.$this->baseUrl.'/'.$endPoint.'\'. Data = '.$json);
         $response = $this->send();
 
         $this->processResponse($response);

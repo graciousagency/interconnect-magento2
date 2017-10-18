@@ -1,15 +1,12 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
-    <event name="sales_order_save_commit_after">
-        <observer name="interconnect_order_save_commit_after" instance="Gracious\Interconnect\Observer\OrderSaveCommitAfterEventObserver" />
+    <event name="checkout_onepage_controller_success_action">
+        <observer name="gracious_interconnect_checkout_onepage_controller_success_action" instance="Gracious\Interconnect\Observer\CheckoutOnePageControllerSuccessActionEventObserver" />
     </event>
-    <event name="customer_save_commit_after">
-        <observer name="interconnect_customer_save_commit_after" instance="Gracious\Interconnect\Observer\CustomerSaveCommitAfterEventObserver" />
+    <event name="customer_register_success">
+        <observer name="gracious_interconnect_customer_register_success" instance="Gracious\Interconnect\Observer\CustomerRegisterSuccessEventObserver" />
     </event>
     <!--<event name="sales_quote_save_commit_after">-->
         <!--<observer name="interconnect_quote_save_commit_after" instance="Gracious\Interconnect\Observer\QuoteSaveCommitAfterEventObserver" />-->
     <!--</event>-->
-    <event name="newsletter_subscriber_save_commit_after">
-        <observer name="interconnect_subscriber_save_commit_after" instance="Gracious\Interconnect\Observer\NewsletterSubscriberSaveCommitAfterEventObserver" />
-    </event>
 </config>

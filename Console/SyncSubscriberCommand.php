@@ -2,10 +2,10 @@
 namespace Gracious\Interconnect\Console;
 
 use Magento\Framework\App\State;
-use Psr\Log\LoggerInterface as Logger;
 use Magento\Newsletter\Model\Subscriber;
 use Gracious\Interconnect\Helper\Config;
 use Magento\Framework\App\ObjectManager;
+use Gracious\Interconnect\Reporting\Logger;
 use Gracious\Interconnect\Http\Request\Client;
 use Symfony\Component\Console\Input\InputOption;
 use Gracious\Interconnect\Console\CommandAbstract;

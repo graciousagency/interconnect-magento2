@@ -2,9 +2,9 @@
 namespace Gracious\Interconnect\Http\Request\Data;
 
 use Exception;
-use Psr\Log\LoggerInterface;
 use Gracious\Interconnect\Helper\Config;
 use Magento\Framework\App\ObjectManager;
+use Gracious\Interconnect\Reporting\Logger;
 use Gracious\Interconnect\Support\Formatter;
 
 /**
@@ -28,7 +28,7 @@ abstract class FactoryAbstract
      */
     public function __construct()
     {
-        $this->logger = ObjectManager::getInstance()->get(LoggerInterface::class);
+        $this->logger = ObjectManager::getInstance()->create(Logger::class);
         $this->config = ObjectManager::getInstance()->get(Config::class);
     }
 

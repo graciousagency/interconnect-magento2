@@ -2,10 +2,10 @@
 namespace Gracious\Interconnect\Console;
 
 use Magento\Framework\App\State;
-use Psr\Log\LoggerInterface as Logger;
 use Magento\Sales\Model\OrderRepository;
 use Magento\Framework\App\ObjectManager;
 use Gracious\Interconnect\Helper\Config;
+use Gracious\Interconnect\Reporting\Logger;
 use Gracious\Interconnect\Http\Request\Client;
 use Magento\Catalog\Helper\Image as ImageHelper;
 use Symfony\Component\Console\Input\InputOption;
