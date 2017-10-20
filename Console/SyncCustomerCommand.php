@@ -1,6 +1,7 @@
 <?php
 namespace Gracious\Interconnect\Console;
 
+use Gracious\Interconnect\Helper\CustomerReflector;
 use Magento\Framework\App\State;
 use Gracious\Interconnect\Helper\Config;
 use Gracious\Interconnect\Reporting\Logger;
@@ -48,7 +49,6 @@ class SyncCustomerCommand extends CommandAbstract
 
     /**
      * {@inheritdoc}
-     * @todo Validate --id option as integer
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -58,7 +58,9 @@ class SyncCustomerCommand extends CommandAbstract
             return;
         }
 
-        $customer = $this->customerRepository->getById($input->getOption('id'));
+        $customerId = $input->getOption('id');
+        $this->evalInt($customerId);
+        $customer = $this->customerRepository->getById($customerId);
 
         if($customer === null) {
             $output->write('No customer found, aborting....');

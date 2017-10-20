@@ -60,7 +60,9 @@ class SyncQuoteCommand extends CommandAbstract
             return;
         }
 
-        $quote = $this->quoteRepository->get($input->getOption('id'));
+        $quoteId = $input->getOption('id');
+        $this->evalInt($quoteId);
+        $quote = $this->quoteRepository->get($quoteId);
 
         if($quote === null) {
             $output->writeln('No quote found, aborting...');

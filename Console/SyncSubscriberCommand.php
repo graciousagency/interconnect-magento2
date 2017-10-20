@@ -35,7 +35,6 @@ class SyncSubscriberCommand extends CommandAbstract
 
     /**
      * {@inheritdoc}
-     * @todo Validate --id option as integer
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -46,6 +45,7 @@ class SyncSubscriberCommand extends CommandAbstract
         }
 
         $subscriberId = $input->getOption('id');
+        $this->evalInt($subscriberId);
         $objectManager = ObjectManager::getInstance();
         /* @var $subscriber Subscriber */ $subscriber = $objectManager->create(Subscriber::class)->load($subscriberId);
 

@@ -53,7 +53,6 @@ class SyncOrderCommand extends CommandAbstract
 
     /**
      * {@inheritdoc}
-     * @todo Validate --id option as integer
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -63,7 +62,9 @@ class SyncOrderCommand extends CommandAbstract
             return;
         }
 
-        /* @var $order Order */ $order = $this->orderRepository->get($input->getOption('id'));
+        $orderId = $input->getOption('id');
+        $this->evalInt($orderId);
+        /* @var $order Order */ $order = $this->orderRepository->get($orderId);
 
         if($order === null) {
             $output->writeln('No order found, aborting....');

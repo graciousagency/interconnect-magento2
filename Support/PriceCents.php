@@ -19,6 +19,7 @@ class PriceCents
      */
     function __construct($price)
     {
+        $price = $price != null ? $price : 0;
         $this->price = (float)$price;
     }
 

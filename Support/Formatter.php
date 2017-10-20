@@ -28,6 +28,10 @@ abstract class Formatter
      * @return string
      */
     public static function formatDateStringToIso8601($dateString) {
+        if($dateString === null) {
+            return null;
+        }
+
         $dateTime = new DateTime($dateString);
 
         return $dateTime->format(DateTime::ATOM);

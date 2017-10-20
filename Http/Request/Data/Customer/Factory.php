@@ -9,7 +9,9 @@ use Magento\Customer\Model\Data\Address;
 use Magento\Framework\App\ObjectManager;
 use Gracious\Interconnect\Support\Formatter;
 use Gracious\Interconnect\Support\EntityType;
+use Gracious\Interconnect\Support\PriceCents;
 use Magento\Customer\Api\AddressRepositoryInterface;
+use Gracious\Interconnect\Reflection\CustomerReflector;
 use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
 use Magento\Customer\Api\Data\CustomerInterface as CustomerContract;
 use Gracious\Interconnect\Http\Request\Data\Address\Factory as AddressFactory;
@@ -32,6 +34,8 @@ class Factory extends FactoryAbstract
 
         $prefix = $customer->getPrefix();
         $customerId = $customer->getId();
+        /* @var  $customerInspector CustomerReflector */ $customerInspector = ObjectManager::getInstance()->create(CustomerReflector::class);
+        $historicInfo = $customerInspector->getCustomerHistoricInfoByCustomerEmail($customer->getEmail());
 
         return [
             'customerId'                => $this->generateEntityId($customerId, EntityType::CUSTOMER),
@@ -44,6 +48,11 @@ class Factory extends FactoryAbstract
             'billingAddress'            => $this->getAddress($customer->getDefaultBilling()),
             'shippingAddress'           => $this->getAddress($customer->getDefaultShipping()),
             'isAnonymous'               => false,
+            'totalOrderCount'           => (int)$historicInfo->getTotalOrderCount(),
+            'totalOrderAmount'          => PriceCents::create($historicInfo->getTotalOrderAmount())->toInt(),
+            'firstOrderDate'            => Formatter::formatDateStringToIso8601($historicInfo->getFirstOrderDate()),
+            'lastOrderDate'             => Formatter::formatDateStringToIso8601($historicInfo->getLastOrderDate()),
+            'registrationDate'          => Formatter::formatDateStringToIso8601($historicInfo->getRegistrationDate()),
             'createdAt'                 => Formatter::formatDateStringToIso8601($customer->getCreatedAt()),
             'updatedAt'                 => Formatter::formatDateStringToIso8601($customer->getUpdatedAt())
         ];
@@ -56,6 +65,8 @@ class Factory extends FactoryAbstract
     public function setUpAnonymousCustomerDataFromOrder(Order $order) {
         $billingAddress = $order->getBillingAddress();
         $shippingAddress = $order->getShippingAddress();
+        /* @var  $customerInspector CustomerReflector */ $customerInspector = ObjectManager::getInstance()->create(CustomerReflector::class);
+        $historicInfo = $customerInspector->getCustomerHistoricInfoByCustomerEmail($billingAddress->getEmail());
 
         return [
             'customerId'                => null,
@@ -68,6 +79,11 @@ class Factory extends FactoryAbstract
             'billingAddress'            => $this->setupAddressData($billingAddress),
             'shippingAddress'           => $this->setupAddressData($shippingAddress),
             'isAnonymous'               => true,
+            'totalOrderCount'           => (int)$historicInfo->getTotalOrderCount(),
+            'totalOrderAmountInCents'   => PriceCents::create($historicInfo->getTotalOrderAmount())->toInt(),
+            'firstOrderDate'            => Formatter::formatDateStringToIso8601($historicInfo->getFirstOrderDate()),
+            'lastOrderDate'             => Formatter::formatDateStringToIso8601($historicInfo->getLastOrderDate()),
+            'registrationDate'          => null,
             'createdAt'                 => Formatter::formatDateStringToIso8601($order->getCreatedAt()),
             'updatedAt'                 => Formatter::formatDateStringToIso8601($order->getUpdatedAt())
         ];
