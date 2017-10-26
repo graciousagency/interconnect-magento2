@@ -3,17 +3,12 @@ namespace Gracious\Interconnect\Console;
 
 use Exception;
 use Magento\Framework\App\State;
-use Monolog\Handler\HandlerInterface;
 use Gracious\Interconnect\Helper\Config;
 use Gracious\Interconnect\Reporting\Logger;
 use Gracious\Interconnect\Http\Request\Client;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Magento\Customer\Model\ResourceModel\Customer;
 use Gracious\Interconnect\Support\Validation\RegEx;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Magento\Customer\Model\ResourceModel\Customer\Collection;
+use Gracious\Interconnect\System\Exception as InterconnectException;
 
 /**
  * Class CommandAbstract
@@ -66,14 +61,14 @@ abstract class CommandAbstract extends Command
 
     /**
      * @param mixed $value
-     * @throws Exception
+     * @throws InterconnectException
      */
     protected function evalInt($value) {
         // Cast to string if it's a numeric type because regex evaluates strings
         $value = is_numeric($value) ? (string)$value : $value;
 
         if(!is_string($value) || !RegEx::test(RegEx::INT, $value)) {
-            throw new Exception('Expected integer but got '.gettype($value));
+            throw new InterconnectException('Expected integer but got '.gettype($value));
         }
     }
 }

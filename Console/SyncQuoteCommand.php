@@ -6,7 +6,6 @@ use Magento\Quote\Model\QuoteRepository;
 use Gracious\Interconnect\Helper\Config;
 use Gracious\Interconnect\Reporting\Logger;
 use Gracious\Interconnect\Http\Request\Client;
-use Magento\Catalog\Helper\Image as ImageHelper;
 use Symfony\Component\Console\Input\InputOption;
 use Gracious\Interconnect\Console\CommandAbstract;
 use Symfony\Component\Console\Input\InputInterface;
@@ -55,7 +54,7 @@ class SyncQuoteCommand extends CommandAbstract
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if(!$this->config->isComplete()) {
-            $this->logger->error(__METHOD__.' :: Unable to rock and roll: module config values not configured (completely) in the backend. Aborting....');
+            $output->writeln('Unable to rock and roll: module config values not configured (completely) in the backend. Aborting....');
 
             return;
         }
@@ -66,6 +65,8 @@ class SyncQuoteCommand extends CommandAbstract
 
         if($quote === null) {
             $output->writeln('No quote found, aborting...');
+
+            return;
         }
 
         $output->writeln('Found quote, sending...');

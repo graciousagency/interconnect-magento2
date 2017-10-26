@@ -1,7 +1,8 @@
 <?php
 namespace Gracious\Interconnect\Reporting;
 
-use \Monolog\Logger as Base;
+use Exception;
+use Monolog\Logger as Base;
 
 /**
  * Class Logger
@@ -10,4 +11,15 @@ use \Monolog\Logger as Base;
  */
 class Logger extends Base
 {
+    /**
+     * @param Exception $exception
+     */
+    public function exception(Exception $exception) {
+        $this->alert('*** EXCEPTION ' . str_repeat('*****', 20));
+        $this->alert('*** Type: ' . get_class($exception));
+        $this->alert('*** File: ' . $exception->getFile());
+        $this->alert('*** Line: ' . $exception->getLine());
+        $this->alert('*** Message: ' . $exception->getMessage());
+        $this->alert('*** Trace:  ' . $exception->getTraceAsString());
+    }
 }

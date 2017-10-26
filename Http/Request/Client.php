@@ -1,14 +1,13 @@
 <?php
 namespace Gracious\Interconnect\Http\Request;
 
-use Exception;
 use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\Http\Client as Base;
-use Gracious\Interconnect\Helper;
-use Magento\Framework\App\ObjectManager;
 use Gracious\Interconnect\Helper\Config;
 use Gracious\Interconnect\Reporting\Logger;
+use Gracious\Interconnect\Foundation\Environment;
+use Gracious\Interconnect\System\Exception as InterconnectException;
 
 class Client extends Base
 {
@@ -67,25 +66,36 @@ class Client extends Base
      * @param array $data
      * @param string $endPoint
      * @return bool
-     * @throws Exception
+     * @throws InterconnectException
+     * @throws \Zend\Http\Client\Exception\RuntimeException
      */
     public function sendData(array $data, $endPoint) {
         if($this->baseUrl === null){
-            throw new Exception('Unable to make request: base url not set');
+            throw new InterconnectException('Unable to make request: base url not set');
         }
 
+        $metaData = Environment::getInstance();
         $json = json_encode($data);
+
+        if(Environment::isInDeveloperMode()) {
+            $this->logger->info(str_repeat('*****', 30));
+            $this->logger->info(__METHOD__.':: Posting to \''.$this->baseUrl.'/'.$endPoint.'\'. Data = '.$json);
+        }
+
         $this->setMethod(Request::METHOD_POST)
             ->setUri($this->baseUrl.'/'.$endPoint)
             ->setHeaders([
-                'Content-Type'  => 'application/json',
-                'X-Secret'      => $this->helperConfig->getApiKey()
+                'Content-Type'      => 'application/json',
+                'X-Secret'          => $this->helperConfig->getApiKey(),
+                'X-ModuleType'      => $metaData->getModuleType(),
+                'X-ModuleVersion'   => $metaData->getModuleVersion(),
+                'X-AppHandle'       => 'magento2',
+                'X-AppVersion'      => $metaData->getMagentoVersion(),
+                'X-Domain'          => $metaData->getDomain()
             ])
             ->setRawBody($json)
         ;
 
-        $this->logger->info(str_repeat('*****', 30));
-        $this->logger->info(__METHOD__.':: Posting to \''.$this->baseUrl.'/'.$endPoint.'\'. Data = '.$json);
         $response = $this->send();
 
         $this->processResponse($response);
@@ -93,6 +103,7 @@ class Client extends Base
 
     /**
      * @param Response $response
+     * @throws InterconnectException
      */
     protected function processResponse(Response $response) {
         $request = $this->getRequest();
@@ -102,7 +113,11 @@ class Client extends Base
         if(!$success) {
             $this->logger->error('Response status = '.$statusCode.', response = '.(string)$response);
             
-            throw new Exception('Error making request to \''.$request->getUriString().'\' with http status code :'.$statusCode.' and response '.(string)$response);
+            throw new InterconnectException('Error making request to \''.$request->getUriString().'\' with http status code :'.$statusCode.' and response '.(string)$response);
+        }
+
+        if(Environment::isInDeveloperMode()) {
+            $this->logger->info('Data sent to: '.$request->getUriString().'. All done here...');
         }
     }
 }

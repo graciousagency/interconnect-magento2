@@ -1,26 +1,23 @@
 <?php
 namespace Gracious\Interconnect\Console;
 
+use Throwable;
 use Magento\Sales\Model\Order;
 use Magento\Framework\App\State;
 use Magento\Sales\Model\OrderRepository;
-use Magento\Framework\App\ObjectManager;
 use Gracious\Interconnect\Helper\Config;
 use Gracious\Interconnect\Reporting\Logger;
 use Gracious\Interconnect\Http\Request\Client;
-use Magento\Catalog\Helper\Image as ImageHelper;
 use Symfony\Component\Console\Input\InputOption;
-use Gracious\Interconnect\Reporting\OutputAdapter;
 use Gracious\Interconnect\Console\CommandAbstract;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Gracious\Interconnect\Generic\Behaviours\SendsOrder;
+use Gracious\Interconnect\Http\Request\Client as InterconnectClient;
 use Gracious\Interconnect\Http\Request\Data\Order\Factory as OrderDataFactory;
 
 
 class SyncOrderCommand extends CommandAbstract
 {
-    use SendsOrder;
 
     /**
      * @var OrderRepository
@@ -57,7 +54,7 @@ class SyncOrderCommand extends CommandAbstract
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if(!$this->config->isComplete()) {
-            $this->logger->error(__METHOD__.' :: Unable to rock and roll: module config values not configured (completely) in the backend. Aborting....');
+            $output->writeln('Unable to rock and roll: module config values not configured (completely) in the backend. Aborting....');
 
             return;
         }
@@ -68,8 +65,13 @@ class SyncOrderCommand extends CommandAbstract
 
         if($order === null) {
             $output->writeln('No order found, aborting....');
+
+            return;
         }
 
-        $this->sendOrder($order, new OutputAdapter($output), $this->client);
+        $output->write('Found order ('.$orderId.'), sending...');
+        $orderDataFactory = new OrderDataFactory();
+        $requestData = $orderDataFactory->setupData($order);
+        $this->client->sendData($requestData, InterconnectClient::ENDPOINT_ORDER);
     }
 }

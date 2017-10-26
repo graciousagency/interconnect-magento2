@@ -35,20 +35,16 @@ class QuoteSaveCommitAfterEventObserver extends ObserverAbstract
         try{
             $requestData = $quoteDataFactory->setupData($quote);
         }catch (Throwable $exception) {
-//            $this->logger->error('Failed to prepare the quote data. *** MESSAGE ***:  '.$exception->getMessage().',  *** TRACE ***: '.$exception->getTraceAsString());
-            $this->logger->error('Failed to prepare the quote data. *** MESSAGE ***:  '.$exception->getMessage());
+            $this->logger->exception($exception);
 
             return;
         }
-
-        $this->logger->debug('Quote data: ' . json_encode($requestData));
 
         // Try/catch because we don't want to disturb critical processes such as the checkout
         try {
             $this->client->sendData($requestData, InterconnectClient::ENDPOINT_QUOTE);
         }catch(Throwable $exception) {
-//            $this->logger->error('Failed to send quote. *** MESSAGE ***: '.$exception->getMessage().',  *** TRACE ***:'.$exception->getTraceAsString());
-            $this->logger->error('Failed to send quote. *** MESSAGE ***: '.$exception->getMessage());
+            $this->logger->exception($exception);
 
             return;
         }

@@ -62,7 +62,7 @@ class NewAction extends Base
                 $requestData = $subscriberFactory->setupData($subscriber);
                 $client->sendData($requestData, InterconnectClient::ENDPOINT_NEWSLETTER_SUBSCRIBER);
             }catch (Exception $exception) {
-                $logger->error(__METHOD__.' :: Exception while sending subscription ('.$subscriber->getId().'), MESSAGE = '.$exception->getMessage().', TRACE = '.$exception->getTraceAsString());
+                $logger->exception($exception);
 
                 return;
             }

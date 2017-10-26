@@ -39,7 +39,7 @@ class SyncSubscriberCommand extends CommandAbstract
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if(!$this->config->isComplete()) {
-            $this->logger->error(__METHOD__.' :: Unable to rock and roll: module config values not configured (completely) in the backend. Aborting....');
+            $output->writeln('Unable to rock and roll: module config values not configured (completely) in the backend. Aborting....');
 
             return;
         }
@@ -56,7 +56,6 @@ class SyncSubscriberCommand extends CommandAbstract
         }
 
         $output->write('Found subscriber \''.$subscriber->getEmail().'\', sending...');
-
         $subscriberFactory = new SubscriberFactory();
         $requestData = $subscriberFactory->setupData($subscriber);
         $this->client->sendData($requestData, Client::ENDPOINT_NEWSLETTER_SUBSCRIBER);

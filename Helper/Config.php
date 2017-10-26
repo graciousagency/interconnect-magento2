@@ -15,6 +15,9 @@ class Config extends AbstractHelper
     const XML_PATH_PREFIX               = 'gracious_interconnect/settings/prefix';
     const XML_PATH_API_KEY              = 'gracious_interconnect/settings/apikey';
 
+    /**
+     * @var string[]
+     */
     protected $lazyData = [];
 
     /**

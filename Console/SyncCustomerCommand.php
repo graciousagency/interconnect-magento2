@@ -1,7 +1,6 @@
 <?php
 namespace Gracious\Interconnect\Console;
 
-use Gracious\Interconnect\Helper\CustomerReflector;
 use Magento\Framework\App\State;
 use Gracious\Interconnect\Helper\Config;
 use Gracious\Interconnect\Reporting\Logger;
@@ -53,7 +52,7 @@ class SyncCustomerCommand extends CommandAbstract
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if(!$this->config->isComplete()) {
-            $this->logger->error(__METHOD__.' :: Unable to rock and roll: module config values not configured (completely) in the backend. Aborting....');
+            $output->write('Unable to rock and roll: module config values not configured (completely) in the backend. Aborting....');
 
             return;
         }
@@ -68,11 +67,9 @@ class SyncCustomerCommand extends CommandAbstract
             return;
         }
 
-        $output->write('Found customer, sending...');
-
+        $output->write('Found customer('.$customerId.'), sending...');
         $customerDataFactory = new CustomerDataFactory();
         $requestData = $customerDataFactory->setupData($customer);
-        $this->logger->debug(json_encode($requestData));
         $this->client->sendData($requestData, Client::ENDPOINT_CUSTOMER);
     }
 }

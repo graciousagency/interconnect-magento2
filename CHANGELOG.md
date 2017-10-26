@@ -1,5 +1,5 @@
 **1.0.0** : 2017/10/13
-- First release.
+- Initial release.
 
 **1.0.1** : 2017/10/16
 - Delegated order item data formatting to separate factory class.
@@ -21,3 +21,11 @@ events.
 - Delegated address data formatting to separate factory class.
 - Delegated sending order to a trait to prevent repeating code in console command and event observer.
 - Added customer data to order (specifically useful for anonymous orders that weren't preceded by a customer registration).
+
+**1.3.0** : 2017/10/?
+- Included extra data required for the Robin api.
+- Only log certain things in developer mode.
+- Added missing return statements in console commands for aborting.
+- Included app data in the sent headers.
+- Custom Exception classes.
+- Cleaned up logging (debug logging only in developer mode + verbose exception logging).

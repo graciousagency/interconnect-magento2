@@ -12,6 +12,7 @@ use Gracious\Interconnect\Support\EntityType;
 use Gracious\Interconnect\Support\PriceCents;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Gracious\Interconnect\Reflection\CustomerReflector;
+use Gracious\Interconnect\System\InvalidArgumentException;
 use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
 use Magento\Customer\Api\Data\CustomerInterface as CustomerContract;
 use Gracious\Interconnect\Http\Request\Data\Address\Factory as AddressFactory;
@@ -26,16 +27,17 @@ class Factory extends FactoryAbstract
     /**
      * @param CustomerContract|Customer $customer
      * @return array
+     * @throws InvalidArgumentException
      */
     public function setupData($customer) {
         if(!($customer instanceof Customer) && !($customer instanceof CustomerContract)) {
-            throw new Exception('Invalid argument supplied; expected instance of '.Customer::class.' or '.CustomerContract::class);
+            throw new InvalidArgumentException('Invalid argument supplied; expected instance of '.Customer::class.' or '.CustomerContract::class);
         }
 
         $prefix = $customer->getPrefix();
         $customerId = $customer->getId();
-        /* @var  $customerInspector CustomerReflector */ $customerInspector = ObjectManager::getInstance()->create(CustomerReflector::class);
-        $historicInfo = $customerInspector->getCustomerHistoricInfoByCustomerEmail($customer->getEmail());
+        /* @var  $customerReflector CustomerReflector */ $customerReflector = ObjectManager::getInstance()->create(CustomerReflector::class);
+        $historicInfo = $customerReflector->getCustomerHistoricInfoByCustomerEmail($customer->getEmail());
 
         return [
             'customerId'                => $this->generateEntityId($customerId, EntityType::CUSTOMER),
@@ -65,8 +67,8 @@ class Factory extends FactoryAbstract
     public function setUpAnonymousCustomerDataFromOrder(Order $order) {
         $billingAddress = $order->getBillingAddress();
         $shippingAddress = $order->getShippingAddress();
-        /* @var  $customerInspector CustomerReflector */ $customerInspector = ObjectManager::getInstance()->create(CustomerReflector::class);
-        $historicInfo = $customerInspector->getCustomerHistoricInfoByCustomerEmail($billingAddress->getEmail());
+        /* @var  $customerReflector CustomerReflector */ $customerReflector = ObjectManager::getInstance()->create(CustomerReflector::class);
+        $historicInfo = $customerReflector->getCustomerHistoricInfoByCustomerEmail($billingAddress->getEmail());
 
         return [
             'customerId'                => null,

@@ -33,20 +33,16 @@ class CustomerRegisterSuccessEventObserver extends ObserverAbstract
         try{
             $requestData = $customerDataFactory->setupData($customer);
         }catch (Throwable $exception) {
-//            $this->logger->error('Failed to prepare the customer data. *** MESSAGE ***:  '.$exception->getMessage().',  *** TRACE ***:'.$exception->getTraceAsString());
-            $this->logger->error('Failed to prepare the customer data. *** MESSAGE ***:  '.$exception->getMessage());
+            $this->logger->exception($exception);
 
             return;
         }
-
-        $this->logger->notice(__METHOD__.'Customer data: ' . json_encode($requestData));
 
         // Try/catch because we don't want to disturb critical processes such as the checkout
         try {
             $this->client->sendData($requestData, InterconnectClient::ENDPOINT_CUSTOMER);
         }catch(Throwable $exception) {
-//            $this->logger->error('Failed to send customer. *** MESSAGE ***: '.$exception->getMessage().', *** TRACE ***: '.$exception->getTraceAsString());
-            $this->logger->error('Failed to send customer. *** MESSAGE ***: '.$exception->getMessage());
+            $this->logger->exception($exception);
 
             return;
         }

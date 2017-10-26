@@ -31,19 +31,15 @@ class NewsletterSubscriberSaveCommitAfterEventObserver extends ObserverAbstract
         try {
             $requestData = $subscriberDataFactory->setupData($subscriber);
         }catch (Throwable $exception) {
-//            $this->logger->error('Failed to prepare the newsletter subscriber data. *** MESSAGE ***:  '.$exception->getMessage().',  *** TRACE ***: '.$exception->getTraceAsString());
-            $this->logger->error('Failed to prepare the newsletter subscriber data. *** MESSAGE ***:  '.$exception->getMessage());
+            $this->logger->exception($exception);
 
             return;
         }
 
-        $this->logger->notice('Subscriber data: ' . json_encode($requestData));
-
         try {
             $this->client->sendData($requestData, InterconnectClient::ENDPOINT_NEWSLETTER_SUBSCRIBER);
         }catch(Throwable $exception) {
-//            $this->logger->error('Failed to send the newsletter subscriber data. *** MESSAGE ***: '.$exception->getMessage().',  *** TRACE ***:'.$exception->getTraceAsString());
-            $this->logger->error('Failed to send the newsletter subscriber data. *** MESSAGE ***: '.$exception->getMessage());
+            $this->logger->exception($exception);
 
             return;
         }
