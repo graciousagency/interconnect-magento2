@@ -7,6 +7,7 @@ use Zend\Http\Client as Base;
 use Gracious\Interconnect\Helper\Config;
 use Gracious\Interconnect\Reporting\Logger;
 use Gracious\Interconnect\Foundation\Environment;
+use Zend\Http\Client\Adapter\Curl as CurlAdapter;
 use Gracious\Interconnect\System\Exception as InterconnectException;
 
 class Client extends Base
@@ -50,7 +51,7 @@ class Client extends Base
      * @return Client
      */
     public function setBaseUrl($baseUrl) {
-        $this->baseUrl = $baseUrl;
+        $this->baseUrl = rtrim($baseUrl, '/');
 
         return $this;
     }
@@ -65,13 +66,21 @@ class Client extends Base
     /**
      * @param array $data
      * @param string $endPoint
-     * @return bool
      * @throws InterconnectException
      * @throws \Zend\Http\Client\Exception\RuntimeException
      */
     public function sendData(array $data, $endPoint) {
         if($this->baseUrl === null){
             throw new InterconnectException('Unable to make request: base url not set');
+        }
+
+        if(Environment::isInDeveloperMode()) {
+            // Overcome ssl problems on local machine
+            $this->logger->notice(__METHOD__.'=> Local machine; disabling ssl checks...');
+            $curlAdapter = new CurlAdapter();
+            $curlAdapter->setCurlOption(CURLOPT_SSL_VERIFYPEER, false);
+            $curlAdapter->setCurlOption(CURLOPT_SSL_VERIFYHOST, false);
+            $this->setAdapter($curlAdapter);
         }
 
         $metaData = Environment::getInstance();

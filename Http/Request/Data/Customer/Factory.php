@@ -11,9 +11,9 @@ use Gracious\Interconnect\Support\Formatter;
 use Gracious\Interconnect\Support\EntityType;
 use Gracious\Interconnect\Support\PriceCents;
 use Magento\Customer\Api\AddressRepositoryInterface;
-use Gracious\Interconnect\Reflection\CustomerReflector;
 use Gracious\Interconnect\System\InvalidArgumentException;
 use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
+use Gracious\Interconnect\Model\Customer as InterconnectCustomer;
 use Magento\Customer\Api\Data\CustomerInterface as CustomerContract;
 use Gracious\Interconnect\Http\Request\Data\Address\Factory as AddressFactory;
 
@@ -36,14 +36,15 @@ class Factory extends FactoryAbstract
 
         $prefix = $customer->getPrefix();
         $customerId = $customer->getId();
-        /* @var  $customerReflector CustomerReflector */ $customerReflector = ObjectManager::getInstance()->create(CustomerReflector::class);
-        $historicInfo = $customerReflector->getCustomerHistoricInfoByCustomerEmail($customer->getEmail());
+        $customerEmail = $customer->getEmail();
+        $interconnectCustomer = new InterconnectCustomer($customerEmail, $customer);
+        $historicInfo = $interconnectCustomer->getCustomerHistoricInfo();
 
         return [
             'customerId'                => $this->generateEntityId($customerId, EntityType::CUSTOMER),
             'firstName'                 => $customer->getFirstname(),
             'lastName'                  => Formatter::prefixLastName($customer->getLastname(), $prefix),
-            'emailAddress'              => $customer->getEmail(),
+            'emailAddress'              => $customerEmail,
             'gender'                    => $customer->getGender(),
             'birthDate'                 => $customer->getDob(),
             'optIn'                     => $this->isCustomerSubscribedToNewsletter($customerId),
@@ -67,14 +68,15 @@ class Factory extends FactoryAbstract
     public function setUpAnonymousCustomerDataFromOrder(Order $order) {
         $billingAddress = $order->getBillingAddress();
         $shippingAddress = $order->getShippingAddress();
-        /* @var  $customerReflector CustomerReflector */ $customerReflector = ObjectManager::getInstance()->create(CustomerReflector::class);
-        $historicInfo = $customerReflector->getCustomerHistoricInfoByCustomerEmail($billingAddress->getEmail());
+        $customerEmail = $billingAddress->getEmail();
+        $interconnectCustomer = new InterconnectCustomer($customerEmail);
+        $historicInfo = $interconnectCustomer->getCustomerHistoricInfo();
 
         return [
             'customerId'                => null,
             'firstName'                 => $billingAddress->getFirstname(),
             'lastName'                  => Formatter::prefixLastName($billingAddress->getLastname(), $billingAddress->getPrefix()),
-            'emailAddress'              => $billingAddress->getEmail(),
+            'emailAddress'              => $customerEmail,
             'gender'                    => null,
             'birthDate'                 => null,
             'optIn'                     => null,

@@ -138,7 +138,7 @@ class Environment {
      * @return mixed
      */
     protected static function parseComposerValue($key, $default = null) {
-        $composerFileHandle = __DIR__.DS.'..'.DS.'composer.json';
+        $composerFileHandle = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.json';
 
         if(!file_exists($composerFileHandle) || !is_readable($composerFileHandle)) {
             return $default;

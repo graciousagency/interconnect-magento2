@@ -1,24 +1,30 @@
 <?php
-namespace Gracious\Interconnect\Reflection;
+namespace Gracious\Interconnect\Model;
 
-use Magento\Sales\Model\Order;
 use Gracious\Interconnect\Support\PaymentStatus;
-use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Sales\Model\Order as SalesModelOrder;
 
-/**
- * Class OrderInspector
- * @package Gracious\Interconnect\Helper
- */
-class OrderReflector extends AbstractHelper
-{
+class Order {
 
     /**
-     * @param Order $order
+     * @var SalesModelOrder
+     */
+    protected $order;
+
+    /**
+     * Order constructor.
+     * @param SalesModelOrder $order
+     */
+    public function __construct(SalesModelOrder $order) {
+        $this->order = $order;
+    }
+
+    /**
      * @return string
      */
-    public function getOrderPaymentStatus(Order $order) {
-        $total = $order->getBaseGrandTotal();
-        $totalPaid = $order->getTotalPaid();
+    public function getOrderPaymentStatus() {
+        $total = $this->order->getBaseGrandTotal();
+        $totalPaid = $this->order->getTotalPaid();
         $amountRemaining = $total - $totalPaid;
         $paymentStatus = null;
 

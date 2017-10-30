@@ -29,3 +29,7 @@ events.
 - Included app data in the sent headers.
 - Custom Exception classes.
 - Cleaned up logging (debug logging only in developer mode + verbose exception logging).
+- Fixed problem in Http Client with double '/' in urls.
+
+**1.4.0** : 2017/10/30
+- Refactored some class names ('reflection') and implementation of those classes to something more appropriate.

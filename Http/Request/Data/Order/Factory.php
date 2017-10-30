@@ -15,8 +15,8 @@ use Gracious\Interconnect\Support\PaymentStatus;
 use Magento\Catalog\Helper\Image as ImageHelper;
 use Magento\Sales\Model\Order\Item as OrderItem;
 use Gracious\Interconnect\Support\Text\Inflector;
-use Gracious\Interconnect\Reflection\OrderReflector;
 use Magento\Customer\Api\CustomerRepositoryInterface;
+use Gracious\Interconnect\Model\Order as InterconnectOrder;
 use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
 use Gracious\Interconnect\Http\Request\Data\Customer\Factory as CustomerFactory;
 use Gracious\Interconnect\Http\Request\Data\Order\Item\Factory as OrderItemFactory;
@@ -55,6 +55,8 @@ class Factory extends FactoryAbstract
         $total = $order->getGrandTotal();
         $discountAmount = $order->getDiscountAmount();
         $discountPercentage = ($discountAmount !== null && $discountAmount > 0 && $total !== null && $total > 0) ? (($discountAmount / $total) * 100): 0;
+        $couponCode = $order->getCouponCode();
+        $discountType = (is_string($couponCode) && trim($couponCode)) != '' ? 'Coupon' :  $order->getDiscountDescription();
 
         return [
             'orderId'               => $this->generateEntityId($order->getId(), EntityType::ORDER),
@@ -64,11 +66,11 @@ class Factory extends FactoryAbstract
             'totalAmountInCents'    => PriceCents::create($total)->toInt(),
             'discountAmountInCents' => PriceCents::create($discountAmount)->toInt(),
             'discountPercentage'    => round($discountPercentage, 2),
-            'discountType'          => $order->getDiscountDescription(),
+            'discountType'          => $discountType,
             'paymentStatus'         => $this->getPaymentStatus($order),
             'orderStatus'           => ucfirst($order->getState()),
             'shipmentStatus'        => $this->getOrderShipmentStatus($order),
-            'couponCode'            => $order->getCouponCode(),
+            'couponCode'            => $couponCode,
             'paymentMethod'         => $paymentMethod,
             'emailAddress'          => $order->getCustomerEmail(),
             'customer'              => $this->getOrderCustomerData($order),
@@ -84,8 +86,8 @@ class Factory extends FactoryAbstract
      * @return string
      */
     protected function getPaymentStatus(Order $order) {
-        /* @var $orderInspector OrderReflector */ $orderInspector =  ObjectManager::getInstance()->create(OrderReflector::class);
-        $paymentStatus = $orderInspector->getOrderPaymentStatus($order);
+        $interconnectOrder =  new InterconnectOrder($order);
+        $paymentStatus = $interconnectOrder->getOrderPaymentStatus();
 
         return ucwords(Inflector::unSnakeCase($paymentStatus));
     }

@@ -66,8 +66,6 @@ class NewAction extends Base
 
                 return;
             }
-
-            $logger->info(__METHOD__.' :: Sent subscriber ('.$subscriber->getId().') to Interconnect');
         }
     }
 }

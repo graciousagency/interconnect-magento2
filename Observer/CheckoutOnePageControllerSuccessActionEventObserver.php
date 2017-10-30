@@ -1,7 +1,6 @@
 <?php
 namespace Gracious\Interconnect\Observer;
 
-use Throwable;
 use Magento\Sales\Model\Order;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\App\ObjectManager;
@@ -9,8 +8,6 @@ use Magento\Sales\Model\OrderRepository;
 use Gracious\Interconnect\Support\Validation\RegEx;
 use Gracious\Interconnect\Observer\ObserverAbstract;
 use Gracious\Interconnect\Generic\Behaviours\SendsOrder;
-use Gracious\Interconnect\Http\Request\Client as InterconnectClient;
-use Gracious\Interconnect\Http\Request\Data\Order\Factory as OrderDataFactory;
 
 /**
  * Class OrderObserver
