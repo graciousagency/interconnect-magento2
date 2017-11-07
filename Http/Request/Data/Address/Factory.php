@@ -26,7 +26,8 @@ class Factory extends FactoryAbstract
             'zipcode'       => $address->getPostcode(),
             'city'          => $address->getCity(),
             'country'       => $address->getCountryId(),
-            'company'       => $address->getCompany()
+            'company'       => $address->getCompany(),
+            'telephone'    => $address->getTelephone()
         ];
     }
 }
