@@ -1,6 +1,7 @@
 <?php
 namespace Gracious\Interconnect\Http\Request;
 
+use Zend\Http\Headers;
 use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\Http\Client as Base;
@@ -91,21 +92,24 @@ class Client extends Base
             $this->logger->info(__METHOD__.':: Posting to \''.$this->baseUrl.'/'.$endPoint.'\'. Data = '.$json);
         }
 
-        $this->setMethod(Request::METHOD_POST)
-            ->setUri($this->baseUrl.'/'.$endPoint)
-            ->setHeaders([
-                'Content-Type'      => 'application/json',
-                'X-Secret'          => $this->helperConfig->getApiKey(),
-                'X-ModuleType'      => $metaData->getModuleType(),
-                'X-ModuleVersion'   => $metaData->getModuleVersion(),
-                'X-AppHandle'       => 'magento2',
-                'X-AppVersion'      => $metaData->getMagentoVersion(),
-                'X-Domain'          => $metaData->getDomain()
-            ])
-            ->setRawBody($json)
-        ;
+        $request = new Request();
+        $headers = new Headers();
+        $headers->addHeaders([
+            'Content-Type' => 'application/json',
+            'X-Secret' => $this->helperConfig->getApiKey(),
+            'X-ModuleType' => $metaData->getModuleType(),
+            'X-ModuleVersion' => $metaData->getModuleVersion(),
+            'X-AppHandle' => 'magento2',
+            'X-AppVersion' => $metaData->getMagentoVersion(),
+            'X-Domain' => $metaData->getDomain()
+        ]);
 
-        $response = $this->send();
+        $request->setMethod(Request::METHOD_POST)
+            ->setUri($this->baseUrl.'/'.$endPoint)
+            ->setHeaders($headers)
+            ->setContent($json);
+
+        $response = $this->send($request);
 
         $this->processResponse($response);
     }
@@ -121,7 +125,7 @@ class Client extends Base
 
         if(!$success) {
             $this->logger->error('Response status = '.$statusCode.', response = '.(string)$response);
-            
+
             throw new InterconnectException('Error making request to \''.$request->getUriString().'\' with http status code :'.$statusCode.' and response '.(string)$response);
         }
 
