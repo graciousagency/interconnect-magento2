@@ -41,11 +41,12 @@ class Factory extends FactoryAbstract
      */
     public function setupData(Order $order) {
         $rows = [];
-        $orderItems = $order->getAllVisibleItems();
+        $orderItems = $order->getItems();
 
         foreach ($orderItems as $orderItem) {
             /* @var $orderItem OrderItem */
-            /* @var $product Product */ $product = $orderItem->getProduct();
+            /* @var $product Product */
+            $product = $orderItem->getProduct();
 
             if($product !== null) { // Redundancy (Could $product be null?)
                 $productTypeId = $product->getTypeId();
