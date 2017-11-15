@@ -1,13 +1,15 @@
 <?php
+
 namespace Gracious\Interconnect\Foundation;
 
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\App\State;
 use Magento\Framework\UrlInterface;
-use Magento\Framework\App\ObjectManager;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Framework\App\ProductMetadataInterface;
 
-class Environment {
+class Environment
+{
 
     /**
      * @var static
@@ -37,7 +39,8 @@ class Environment {
     /**
      * Gracious_Interconnect_Foundation_Environment constructor.
      */
-    private function __construct() {
+    private function __construct()
+    {
         $this->moduleVersion = static::parseModuleVersion();
         $this->moduleType = static::parseModuleType();
         $objectManager = ObjectManager::getInstance();
@@ -55,63 +58,63 @@ class Environment {
     /**
      * @return null|string
      */
-    public function getModuleVersion() {
+    public function getModuleVersion()
+    {
         return $this->moduleVersion;
     }
 
     /**
      * @return string
      */
-    public function getModuleType() {
+    public function getModuleType()
+    {
         return $this->moduleType;
     }
 
     /**
      * @return string
      */
-    public function getMagentoVersion() {
+    public function getMagentoVersion()
+    {
         return $this->magentoVersion;
     }
 
     /**
      * @return mixed|string
      */
-    public function getDomain() {
+    public function getDomain()
+    {
         return $this->domain;
     }
 
     /**
      * @return array
      */
-    public function toArray() {
+    public function toArray()
+    {
         return [
-            'moduleVersion'     => $this->moduleVersion,
-            'moduleType'        => $this->moduleType,
-            'magentoVersion'    => $this->magentoVersion,
-            'domain'            => $this->domain
+            'moduleVersion' => $this->moduleVersion,
+            'moduleType' => $this->moduleType,
+            'magentoVersion' => $this->magentoVersion,
+            'domain' => $this->domain
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return json_encode($this->toArray());
     }
 
 
-
-
-
-
-
-    /* S T A T I C  M E T H O D S * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
     /**
      * @return static
      */
-    public static function getInstance() {
-        if(null === static::$instance) {
+    public static function getInstance()
+    {
+        if (null === static::$instance) {
             static::$instance = new static();
         }
 
@@ -121,14 +124,16 @@ class Environment {
     /**
      * @return null|string
      */
-    public static function parseModuleVersion() {
+    public static function parseModuleVersion()
+    {
         return static::parseComposerValue('version');
     }
 
     /**
      * @return string
      */
-    public static function parseModuleType() {
+    public static function parseModuleType()
+    {
         return static::parseComposerValue('type');
     }
 
@@ -137,16 +142,17 @@ class Environment {
      * @param null $default
      * @return mixed
      */
-    protected static function parseComposerValue($key, $default = null) {
-        $composerFileHandle = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.json';
+    protected static function parseComposerValue($key, $default = null)
+    {
+        $composerFileHandle = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'composer.json';
 
-        if(!file_exists($composerFileHandle) || !is_readable($composerFileHandle)) {
+        if (!file_exists($composerFileHandle) || !is_readable($composerFileHandle)) {
             return $default;
         }
 
         $data = json_decode(file_get_contents($composerFileHandle));
 
-        if(!isset($data->{$key})) {
+        if (!isset($data->{$key})) {
             return $default;
         }
 
@@ -156,7 +162,8 @@ class Environment {
     /**
      * @return bool
      */
-    public static function isInDeveloperMode() {
+    public static function isInDeveloperMode()
+    {
         $state = ObjectManager::getInstance()->get(State::class);
 
         return State::MODE_DEVELOPER === $state->getMode();

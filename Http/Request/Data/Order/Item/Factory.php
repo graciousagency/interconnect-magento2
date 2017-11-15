@@ -1,17 +1,18 @@
 <?php
+
 namespace Gracious\Interconnect\Http\Request\Data\Order\Item;
 
-use Magento\Sales\Model\Order;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Category;
-use Magento\Framework\App\ObjectManager;
-use Gracious\Interconnect\Support\Formatter;
+use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
 use Gracious\Interconnect\Support\EntityType;
+use Gracious\Interconnect\Support\Formatter;
 use Gracious\Interconnect\Support\PriceCents;
 use Gracious\Interconnect\Support\ProductType;
 use Magento\Catalog\Helper\Image as ImageHelper;
+use Magento\Catalog\Model\Category;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\App\ObjectManager;
+use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Item as OrderItem;
-use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
 
 /**
  * Class Factory
@@ -27,7 +28,6 @@ class Factory extends FactoryAbstract
 
     /**
      * Factory constructor.
-     * @param Order $order
      */
     public function __construct()
     {
@@ -39,7 +39,8 @@ class Factory extends FactoryAbstract
     /**
      * @return array
      */
-    public function setupData(Order $order) {
+    public function setupData(Order $order)
+    {
         $rows = [];
         $orderItems = $order->getItems();
 
@@ -48,9 +49,8 @@ class Factory extends FactoryAbstract
             /* @var $product Product */
             $product = $orderItem->getProduct();
 
-            if($product !== null) { // Redundancy (Could $product be null?)
+            if ($product !== null) {
                 $productTypeId = $product->getTypeId();
-//                $this->logger->debug('$productTypeId : '.$productTypeId);
 
                 switch ($productTypeId) {
                     case ProductType::SIMPLE:
@@ -75,21 +75,21 @@ class Factory extends FactoryAbstract
         $image = $this->imageHelper->init($product, 'category_page_list')->getUrl();
 
         return [
-            'emailAddress'      => $order->getCustomerEmail(),
-            'orderId'           => $this->generateEntityId($order->getId(),EntityType::ORDER),
-            'itemId'            => $this->generateEntityId($orderItem->getItemId(), EntityType::ORDER_ITEM),
-            'incrementId'       => $order->getIncrementId(),
-            'productId'         => $this->generateEntityId($product->getId(),EntityType::PRODUCT),
-            'productName'       => $product->getName(),
-            'productSKU'        => $product->getSku(),
-            'category'          => $this->getCategoryNameByProduct($product),
-            'subCategory'       => null,
-            'quantity'          => (int)$orderItem->getQtyOrdered(),
-            'priceInCents'      => PriceCents::create($product->getPrice())->toInt(),
+            'emailAddress' => $order->getCustomerEmail(),
+            'orderId' => $this->generateEntityId($order->getId(), EntityType::ORDER),
+            'itemId' => $this->generateEntityId($orderItem->getItemId(), EntityType::ORDER_ITEM),
+            'incrementId' => $order->getIncrementId(),
+            'productId' => $this->generateEntityId($product->getId(), EntityType::PRODUCT),
+            'productName' => $product->getName(),
+            'productSKU' => $product->getSku(),
+            'category' => $this->getCategoryNameByProduct($product),
+            'subCategory' => null,
+            'quantity' => (int)$orderItem->getQtyOrdered(),
+            'priceInCents' => PriceCents::create($product->getPrice())->toInt(),
             'totalPriceInCents' => PriceCents::create($orderItem->getQtyOrdered() * $product->getPrice())->toInt(),
-            'orderedAtISO8601'  => Formatter::formatDateStringToIso8601($order->getCreatedAt()),
-            'productUrl'        => $product->getProductUrl(),
-            'productImageUrl'   => $image
+            'orderedAtISO8601' => Formatter::formatDateStringToIso8601($order->getCreatedAt()),
+            'productUrl' => $product->getProductUrl(),
+            'productImageUrl' => $image
         ];
     }
 
@@ -97,11 +97,12 @@ class Factory extends FactoryAbstract
      * @param $product Product
      * @return string
      */
-    protected function getCategoryNameByProduct(Product $product){
+    protected function getCategoryNameByProduct(Product $product)
+    {
         $categoryNames = [];
         $categories = $product->getCategoryCollection()->addAttributeToSelect("name");
 
-        foreach($categories as $category) {
+        foreach ($categories as $category) {
             /* @var $category Category */
             $categoryNames[] = $category->getName();
         }

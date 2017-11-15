@@ -43,14 +43,13 @@ class Client
      * Client constructor.
      * @param Config $config
      * @param Logger $logger
-     * @param ZendHttpClient $client
      */
-    public function __construct(Config $config, Logger $logger, ZendHttpClient $client)
+    public function __construct(Config $config, Logger $logger)
     {
         $this->helperConfig = $config;
         $this->logger = $logger;
-        $this->client = $client;
-        $this->client->setBaseUrl($config->getInterconnectServiceBaseUrl());
+        $this->client = new ZendHttpClient();
+        $this->setBaseUrl($config->getInterconnectServiceBaseUrl());
     }
 
     /**
@@ -96,7 +95,6 @@ class Client
             $this->logger->info(__METHOD__ . ':: Posting to \'' . $this->baseUrl . '/' . $endPoint . '\'. Data = ' . $json);
         }
 
-
         $headers = new Headers();
         $headers->addHeaders([
             'Content-Type' => 'application/json',
@@ -128,8 +126,8 @@ class Client
         $request = $this->client->getRequest();
 
         if ($response->isOk()) {
-            $this->logger->error('Response status = ' . $response->getStatusCode() . ', response = ' . (string) $response);
-            throw new InterconnectException('Error making request to \'' . $request->getUriString() . '\' with http status code :' . $response->getStatusCode() . ' and response ' . (string) $response);
+            $this->logger->error('Response status = ' . $response->getStatusCode() . ', response = ' . (string)$response);
+            throw new InterconnectException('Error making request to \'' . $request->getUriString() . '\' with http status code :' . $response->getStatusCode() . ' and response ' . (string)$response);
         }
 
         if (Environment::isInDeveloperMode()) {
