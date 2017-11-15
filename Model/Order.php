@@ -1,10 +1,12 @@
 <?php
+
 namespace Gracious\Interconnect\Model;
 
 use Gracious\Interconnect\Support\PaymentStatus;
 use Magento\Sales\Model\Order as SalesModelOrder;
 
-class Order {
+class Order
+{
 
     /**
      * @var SalesModelOrder
@@ -15,14 +17,16 @@ class Order {
      * Order constructor.
      * @param SalesModelOrder $order
      */
-    public function __construct(SalesModelOrder $order) {
+    public function __construct(SalesModelOrder $order)
+    {
         $this->order = $order;
     }
 
     /**
      * @return string
      */
-    public function getOrderPaymentStatus() {
+    public function getOrderPaymentStatus()
+    {
         $total = $this->order->getBaseGrandTotal();
         $totalPaid = $this->order->getTotalPaid();
         $amountRemaining = $total - $totalPaid;

@@ -1,16 +1,18 @@
 <?php
+
 namespace Gracious\Interconnect\Support\Validation;
 
 /**
  * Class RegEx
  * @package Gracious\Interconnect\Support
  */
-abstract class RegEx {
+abstract class RegEx
+{
 
     /**
      * A positive number of 1 or higher
      */
-    const INT   = '/^[1-9]{1}[0-9]*$/';
+    const INT = '/^[1-9]{1}[0-9]*$/';
 
     /**
      * A digit optionally followed by a period, optionally followed by one or more digits
@@ -42,7 +44,7 @@ abstract class RegEx {
      * A date format YYYY-MM-DD. Separators can be dashes or forward slashed. Months and days must be two digits
      * Only validates the format, not if it's a valid date
      */
-    const DATE_YYYY_MM_DD  = '/^([0-9]{2}\-|\/){2}[0-9]{4}$/';
+    const DATE_YYYY_MM_DD = '/^([0-9]{2}\-|\/){2}[0-9]{4}$/';
 
 
     /**
@@ -50,7 +52,8 @@ abstract class RegEx {
      * @param string $value
      * @return string
      */
-    public static function test($pattern, $value) {
-        return preg_match($pattern, $value) === 1;
+    public static function test($pattern, $value)
+    {
+        return 1 === preg_match($pattern, $value);
     }
 }

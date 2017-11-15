@@ -1,21 +1,22 @@
 <?php
+
 namespace Gracious\Interconnect\Http\Request\Data\Customer;
 
 use Exception;
-use Magento\Sales\Model\Order;
-use Magento\Customer\Model\Customer;
-use Magento\Newsletter\Model\Subscriber;
-use Magento\Customer\Model\Data\Address;
-use Magento\Framework\App\ObjectManager;
-use Gracious\Interconnect\Support\Formatter;
-use Gracious\Interconnect\Support\EntityType;
-use Gracious\Interconnect\Support\PriceCents;
-use Magento\Customer\Api\AddressRepositoryInterface;
-use Gracious\Interconnect\System\InvalidArgumentException;
+use Gracious\Interconnect\Http\Request\Data\Address\Factory as AddressFactory;
 use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
 use Gracious\Interconnect\Model\Customer as InterconnectCustomer;
+use Gracious\Interconnect\Support\EntityType;
+use Gracious\Interconnect\Support\Formatter;
+use Gracious\Interconnect\Support\PriceCents;
+use Gracious\Interconnect\System\InvalidArgumentException;
+use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterface as CustomerContract;
-use Gracious\Interconnect\Http\Request\Data\Address\Factory as AddressFactory;
+use Magento\Customer\Model\Customer;
+use Magento\Customer\Model\Data\Address;
+use Magento\Framework\App\ObjectManager;
+use Magento\Newsletter\Model\Subscriber;
+use Magento\Sales\Model\Order;
 
 /**
  * Class Factory
@@ -29,9 +30,10 @@ class Factory extends FactoryAbstract
      * @return array
      * @throws InvalidArgumentException
      */
-    public function setupData($customer) {
-        if(!($customer instanceof Customer) && !($customer instanceof CustomerContract)) {
-            throw new InvalidArgumentException('Invalid argument supplied; expected instance of '.Customer::class.' or '.CustomerContract::class);
+    public function setupData($customer)
+    {
+        if (!($customer instanceof Customer) && !($customer instanceof CustomerContract)) {
+            throw new InvalidArgumentException('Invalid argument supplied; expected instance of ' . Customer::class . ' or ' . CustomerContract::class);
         }
 
         $prefix = $customer->getPrefix();
@@ -41,23 +43,23 @@ class Factory extends FactoryAbstract
         $historicInfo = $interconnectCustomer->getCustomerHistoricInfo();
 
         return [
-            'customerId'                => $this->generateEntityId($customerId, EntityType::CUSTOMER),
-            'firstName'                 => $customer->getFirstname(),
-            'lastName'                  => Formatter::prefixLastName($customer->getLastname(), $prefix),
-            'emailAddress'              => $customerEmail,
-            'gender'                    => $customer->getGender(),
-            'birthDate'                 => $customer->getDob(),
-            'optIn'                     => $this->isCustomerSubscribedToNewsletter($customerId),
-            'billingAddress'            => $this->getAddress($customer->getDefaultBilling()),
-            'shippingAddress'           => $this->getAddress($customer->getDefaultShipping()),
-            'isAnonymous'               => false,
-            'totalOrderCount'           => (int)$historicInfo->getTotalOrderCount(),
-            'totalOrderAmount'          => PriceCents::create($historicInfo->getTotalOrderAmount())->toInt(),
-            'firstOrderDate'            => Formatter::formatDateStringToIso8601($historicInfo->getFirstOrderDate()),
-            'lastOrderDate'             => Formatter::formatDateStringToIso8601($historicInfo->getLastOrderDate()),
-            'registrationDate'          => Formatter::formatDateStringToIso8601($historicInfo->getRegistrationDate()),
-            'createdAt'                 => Formatter::formatDateStringToIso8601($customer->getCreatedAt()),
-            'updatedAt'                 => Formatter::formatDateStringToIso8601($customer->getUpdatedAt())
+            'customerId' => $this->generateEntityId($customerId, EntityType::CUSTOMER),
+            'firstName' => $customer->getFirstname(),
+            'lastName' => Formatter::prefixLastName($customer->getLastname(), $prefix),
+            'emailAddress' => $customerEmail,
+            'gender' => $customer->getGender(),
+            'birthDate' => $customer->getDob(),
+            'optIn' => $this->isCustomerSubscribedToNewsletter($customerId),
+            'billingAddress' => $this->getAddress($customer->getDefaultBilling()),
+            'shippingAddress' => $this->getAddress($customer->getDefaultShipping()),
+            'isAnonymous' => false,
+            'totalOrderCount' => (int)$historicInfo->getTotalOrderCount(),
+            'totalOrderAmount' => PriceCents::create($historicInfo->getTotalOrderAmount())->toInt(),
+            'firstOrderDate' => Formatter::formatDateStringToIso8601($historicInfo->getFirstOrderDate()),
+            'lastOrderDate' => Formatter::formatDateStringToIso8601($historicInfo->getLastOrderDate()),
+            'registrationDate' => Formatter::formatDateStringToIso8601($historicInfo->getRegistrationDate()),
+            'createdAt' => Formatter::formatDateStringToIso8601($customer->getCreatedAt()),
+            'updatedAt' => Formatter::formatDateStringToIso8601($customer->getUpdatedAt())
         ];
     }
 
@@ -65,7 +67,8 @@ class Factory extends FactoryAbstract
      * @param Order $order
      * @return array
      */
-    public function setUpAnonymousCustomerDataFromOrder(Order $order) {
+    public function setUpAnonymousCustomerDataFromOrder(Order $order)
+    {
         $billingAddress = $order->getBillingAddress();
         $shippingAddress = $order->getShippingAddress();
         $customerEmail = $billingAddress->getEmail();
@@ -73,23 +76,23 @@ class Factory extends FactoryAbstract
         $historicInfo = $interconnectCustomer->getCustomerHistoricInfo();
 
         return [
-            'customerId'                => null,
-            'firstName'                 => $billingAddress->getFirstname(),
-            'lastName'                  => Formatter::prefixLastName($billingAddress->getLastname(), $billingAddress->getPrefix()),
-            'emailAddress'              => $customerEmail,
-            'gender'                    => null,
-            'birthDate'                 => null,
-            'optIn'                     => null,
-            'billingAddress'            => $this->setupAddressData($billingAddress),
-            'shippingAddress'           => $this->setupAddressData($shippingAddress),
-            'isAnonymous'               => true,
-            'totalOrderCount'           => (int)$historicInfo->getTotalOrderCount(),
-            'totalOrderAmountInCents'   => PriceCents::create($historicInfo->getTotalOrderAmount())->toInt(),
-            'firstOrderDate'            => Formatter::formatDateStringToIso8601($historicInfo->getFirstOrderDate()),
-            'lastOrderDate'             => Formatter::formatDateStringToIso8601($historicInfo->getLastOrderDate()),
-            'registrationDate'          => null,
-            'createdAt'                 => Formatter::formatDateStringToIso8601($order->getCreatedAt()),
-            'updatedAt'                 => Formatter::formatDateStringToIso8601($order->getUpdatedAt())
+            'customerId' => null,
+            'firstName' => $billingAddress->getFirstname(),
+            'lastName' => Formatter::prefixLastName($billingAddress->getLastname(), $billingAddress->getPrefix()),
+            'emailAddress' => $customerEmail,
+            'gender' => null,
+            'birthDate' => null,
+            'optIn' => null,
+            'billingAddress' => $this->setupAddressData($billingAddress),
+            'shippingAddress' => $this->setupAddressData($shippingAddress),
+            'isAnonymous' => true,
+            'totalOrderCount' => (int)$historicInfo->getTotalOrderCount(),
+            'totalOrderAmountInCents' => PriceCents::create($historicInfo->getTotalOrderAmount())->toInt(),
+            'firstOrderDate' => Formatter::formatDateStringToIso8601($historicInfo->getFirstOrderDate()),
+            'lastOrderDate' => Formatter::formatDateStringToIso8601($historicInfo->getLastOrderDate()),
+            'registrationDate' => null,
+            'createdAt' => Formatter::formatDateStringToIso8601($order->getCreatedAt()),
+            'updatedAt' => Formatter::formatDateStringToIso8601($order->getUpdatedAt())
         ];
     }
 
@@ -97,17 +100,21 @@ class Factory extends FactoryAbstract
      * @param int $addressId
      * @return string[]|null
      */
-    protected function getAddress($addressId) {
-        if($addressId === null) {
+    protected function getAddress($addressId)
+    {
+        if ($addressId === null) {
             return null;
         }
 
-        /* @var $address Address */ $address = null;
-        /* @var AddressRepositoryInterface $addressRepository */ $addressRepository = ObjectManager::getInstance()->create(AddressRepositoryInterface::class);
+        /* @var $address Address */
+        $address = null;
+        /* @var AddressRepositoryInterface $addressRepository */
+        $addressRepository = ObjectManager::getInstance()->create(AddressRepositoryInterface::class);
 
         // Nasty: Magento throws an exception if the address doesn't exist instead of just returning null
         try {
-            /* @var $address Address */ $address = $addressRepository->getById($addressId);
+            /* @var $address Address */
+            $address = $addressRepository->getById($addressId);
         } catch (Exception $e) {
             return null;
         }
@@ -119,8 +126,9 @@ class Factory extends FactoryAbstract
      * @param Address|\Magento\Sales\Api\Data\OrderAddressInterface|\Magento\Customer\Api\Data\AddressInterface $address
      * @return array|null
      */
-    protected function setupAddressData($address) {
-        if($address === null) {
+    protected function setupAddressData($address)
+    {
+        if ($address === null) {
             return null;
         }
 
@@ -133,8 +141,10 @@ class Factory extends FactoryAbstract
      * @param int $customerID
      * @return bool
      */
-    protected function isCustomerSubscribedToNewsletter($customerID) {
-        /* @var $utilitySubscriber Subscriber */ $utilitySubscriber = ObjectManager::getInstance()->create(Subscriber::class);
+    protected function isCustomerSubscribedToNewsletter($customerID)
+    {
+        /* @var $utilitySubscriber Subscriber */
+        $utilitySubscriber = ObjectManager::getInstance()->create(Subscriber::class);
         $checkSubscriber = $utilitySubscriber->loadByCustomerId($customerID);
 
         return $checkSubscriber->isSubscribed();

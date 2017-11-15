@@ -1,17 +1,18 @@
 <?php
+
 namespace Gracious\Interconnect\Http\Request\Data\Quote;
 
-use Magento\Quote\Model\Quote;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Category;
-use Magento\Framework\App\ObjectManager;
-use Gracious\Interconnect\Support\Formatter;
+use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
 use Gracious\Interconnect\Support\EntityType;
+use Gracious\Interconnect\Support\Formatter;
 use Gracious\Interconnect\Support\PriceCents;
 use Gracious\Interconnect\Support\ProductType;
 use Magento\Catalog\Helper\Image as ImageHelper;
+use Magento\Catalog\Model\Category;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\App\ObjectManager;
+use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\Quote\Item as QuoteItem;
-use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
 
 /**
  * Class Factory
@@ -34,15 +35,16 @@ class Factory extends FactoryAbstract
         parent::__construct();
     }
 
-    public function setupData(Quote $quote) {
+    public function setupData(Quote $quote)
+    {
         return [
-            'quoteId'           => $this->generateEntityId($quote->getId(), EntityType::QUOTE),
-            'totalAmount'       => PriceCents::create($quote->getBaseGrandTotal())->toInt(),
-            'quantity'          => (int)$quote->getItemsQty(),
-            'couponCode'        => $quote->getCouponCode(),
-            'updatedAt'         => Formatter::formatDateStringToIso8601($quote->getUpdatedAt()),
-            'createdAt'         => Formatter::formatDateStringToIso8601($quote->getCreatedAt()),
-            'quoteRows'         => $this->getQuoteRows($quote)
+            'quoteId' => $this->generateEntityId($quote->getId(), EntityType::QUOTE),
+            'totalAmount' => PriceCents::create($quote->getBaseGrandTotal())->toInt(),
+            'quantity' => (int)$quote->getItemsQty(),
+            'couponCode' => $quote->getCouponCode(),
+            'updatedAt' => Formatter::formatDateStringToIso8601($quote->getUpdatedAt()),
+            'createdAt' => Formatter::formatDateStringToIso8601($quote->getCreatedAt()),
+            'quoteRows' => $this->getQuoteRows($quote)
         ];
     }
 
@@ -58,9 +60,10 @@ class Factory extends FactoryAbstract
 
         foreach ($quoteItems as $quoteItem) {
             /* @var $quoteItem QuoteItem */
-            /* @var $product Product */ $product = $quoteItem->getProduct();
+            /* @var $product Product */
+            $product = $quoteItem->getProduct();
 
-            if($product !== null) { // Don't think this can/should happen but without in-depth Magento knowledge concerning how it works now or may work in the future let's apply some redundancy here...
+            if ($product !== null) {
                 $productTypeId = $product->getTypeId();
 
                 switch ($productTypeId) {
@@ -84,22 +87,22 @@ class Factory extends FactoryAbstract
      */
     protected function formatQuoteRow(Quote $quote, QuoteItem $quoteItem, Product $product)
     {
-        $image = $this->imageHelper->init($product,'category_page_list')->getUrl();
+        $image = $this->imageHelper->init($product, 'category_page_list')->getUrl();
 
         return [
-            'itemId'            => $this->generateEntityId($quoteItem->getItemId(), EntityType::QUOTE_ITEM),
-            'quoteId'           => $this->generateEntityId($quote->getId(),EntityType::QUOTE),
-            'productId'         => $this->generateEntityId($product->getId(),EntityType::PRODUCT),
-            'incrementId'       => null,
-            'productName'       => $product->getName(),
-            'sku'               => $product->getSku(),
-            'category'          => $this->getCategoryNameByProduct($product),
-            'subcategory'       => null,
-            'quantity'          => (int)$quoteItem->getQtyOrdered(),
-            'price'             => PriceCents::create($product->getPrice())->toInt(),
-            'totalPrice'        => PriceCents::create($quoteItem->getQtyOrdered() * $product->getPrice())->toInt(),
-            'productUrl'        => $product->getProductUrl(),
-            'productImage'      => $image,
+            'itemId' => $this->generateEntityId($quoteItem->getItemId(), EntityType::QUOTE_ITEM),
+            'quoteId' => $this->generateEntityId($quote->getId(), EntityType::QUOTE),
+            'productId' => $this->generateEntityId($product->getId(), EntityType::PRODUCT),
+            'incrementId' => null,
+            'productName' => $product->getName(),
+            'sku' => $product->getSku(),
+            'category' => $this->getCategoryNameByProduct($product),
+            'subcategory' => null,
+            'quantity' => (int)$quoteItem->getQtyOrdered(),
+            'price' => PriceCents::create($product->getPrice())->toInt(),
+            'totalPrice' => PriceCents::create($quoteItem->getQtyOrdered() * $product->getPrice())->toInt(),
+            'productUrl' => $product->getProductUrl(),
+            'productImage' => $image,
         ];
     }
 
@@ -107,11 +110,12 @@ class Factory extends FactoryAbstract
      * @param Product $product
      * @return string
      */
-    protected function getCategoryNameByProduct(Product $product){
+    protected function getCategoryNameByProduct(Product $product)
+    {
         $categoryNames = [];
         $categories = $product->getCategoryCollection()->addAttributeToSelect("name");
 
-        foreach($categories as $category) {
+        foreach ($categories as $category) {
             /* @var $category Category */
             $categoryNames[] = $category->getName();
         }

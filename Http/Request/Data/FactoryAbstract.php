@@ -1,11 +1,12 @@
 <?php
+
 namespace Gracious\Interconnect\Http\Request\Data;
 
 use Exception;
 use Gracious\Interconnect\Helper\Config;
-use Magento\Framework\App\ObjectManager;
 use Gracious\Interconnect\Reporting\Logger;
 use Gracious\Interconnect\Support\Formatter;
+use Magento\Framework\App\ObjectManager;
 
 /**
  * Class FactoryAbstract
@@ -40,21 +41,19 @@ abstract class FactoryAbstract
      * The exception throwing is necessary because the id must be unique and thus complete. We really want to let
      * the calling class know when that fails.
      */
-    protected final function generateEntityId($id, $entityPrefix) {
-        if($id === null || trim($id) == '') {
-            // Throw an exception because formatting a unique handle is a critical step
+    protected final function generateEntityId($id, $entityPrefix)
+    {
+        if ($id === null || trim($id) == '') {
             throw new Exception('Unable to format prefixed ID: invalid entity id!');
         }
 
-        if(!is_string($entityPrefix) || trim($entityPrefix) == '') {
-            // Throw an exception because formatting a unique handle is a critical step
+        if (!is_string($entityPrefix) || trim($entityPrefix) == '') {
             throw new Exception('Unable to format prefixed ID: invalid entity prefix!');
         }
 
         $merchantHandle = $this->config->getInterconnectPrefix();
 
-        if(!is_string($merchantHandle) || trim($merchantHandle) == '') {
-            // Throw an exception because formatting a unique handle is a critical step
+        if (!is_string($merchantHandle) || trim($merchantHandle) == '') {
             throw new Exception('Unable to format prefixed ID: Merchant handle not set!');
         }
 

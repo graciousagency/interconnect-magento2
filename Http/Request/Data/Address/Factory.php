@@ -1,10 +1,9 @@
 <?php
 namespace Gracious\Interconnect\Http\Request\Data\Address;
 
-use Exception;
-use Magento\Customer\Model\Data\Address;
-use Gracious\Interconnect\Support\EntityType;
 use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
+use Gracious\Interconnect\Support\EntityType;
+use Magento\Customer\Model\Data\Address;
 
 
 class Factory extends FactoryAbstract
@@ -27,7 +26,7 @@ class Factory extends FactoryAbstract
             'city'          => $address->getCity(),
             'country'       => $address->getCountryId(),
             'company'       => $address->getCompany(),
-            'telephone'    => $address->getTelephone()
+            'telephone' => $address->getTelephone()
         ];
     }
 }
