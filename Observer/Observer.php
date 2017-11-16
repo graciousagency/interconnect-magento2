@@ -75,9 +75,4 @@ abstract class Observer implements ObserverInterface
 
         return Formatter::prefixID($id, $entityPrefix, $this->config->getInterconnectPrefix());
     }
-
-    public function execute(\Magento\Framework\Event\Observer $observer)
-    {
-
-    }
 }
