@@ -1,8 +1,7 @@
 <?php
 
-namespace Gracious\Interconnect\Http\Request\Data\Order\Item;
+namespace Gracious\Interconnect\Http\Request\Data;
 
-use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
 use Gracious\Interconnect\Support\EntityType;
 use Gracious\Interconnect\Support\Formatter;
 use Gracious\Interconnect\Support\PriceCents;
@@ -12,13 +11,13 @@ use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\App\ObjectManager;
 use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Item as OrderItem;
+use Magento\Sales\Model\Order\Item;
 
 /**
  * Class Factory
  * @package Gracious\Interconnect\Http\Request\Data\Order\Item
  */
-class Factory extends FactoryAbstract
+class OrderItem extends Data
 {
 
     /**
@@ -37,6 +36,7 @@ class Factory extends FactoryAbstract
     }
 
     /**
+     * @param Order $order
      * @return array
      */
     public function setupData(Order $order)
@@ -45,7 +45,7 @@ class Factory extends FactoryAbstract
         $orderItems = $order->getItems();
 
         foreach ($orderItems as $orderItem) {
-            /* @var $orderItem OrderItem */
+            /* @var $orderItem Item */
             /* @var $product Product */
             $product = $orderItem->getProduct();
 
@@ -67,10 +67,12 @@ class Factory extends FactoryAbstract
     }
 
     /**
-     * @param OrderItem $orderItem
+     * @param Order $order
+     * @param Item $orderItem
+     * @param Product $product
      * @return string[]
      */
-    protected function setupOrderItemData(Order $order, OrderItem $orderItem, Product $product)
+    protected function setupOrderItemData(Order $order, Item $orderItem, Product $product)
     {
         $image = $this->imageHelper->init($product, 'category_page_list')->getUrl();
 

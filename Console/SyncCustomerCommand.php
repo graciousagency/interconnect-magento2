@@ -10,7 +10,7 @@ use Gracious\Interconnect\Console\CommandAbstract;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
-use Gracious\Interconnect\Http\Request\Data\Customer\Factory as CustomerDataFactory;
+use Gracious\Interconnect\Http\Request\Data\Customer as CustomerDataFactory;
 
 /**
  * Class SyncCustomerCommand

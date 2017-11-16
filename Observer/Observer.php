@@ -11,7 +11,7 @@ use Gracious\Interconnect\System\InvalidArgumentException;
 use Magento\Catalog\Helper\Image;
 use Magento\Framework\Event\ObserverInterface;
 
-abstract class ObserverAbstract implements ObserverInterface
+abstract class Observer implements ObserverInterface
 {
 
     /**
@@ -59,20 +59,25 @@ abstract class ObserverAbstract implements ObserverInterface
      */
     public function generateEntityId($id, $entityPrefix)
     {
-        if ($id === null || trim($id) == '') {
+        if (null === $id || '' == trim($id)) {
             throw new InvalidArgumentException('Unable to format prefixed ID: invalid entity id!');
         }
 
-        if (!is_string($entityPrefix) || trim($entityPrefix) == '') {
+        if (!is_string($entityPrefix) || '' == trim($entityPrefix)) {
             throw new InvalidArgumentException('Unable to format prefixed ID: invalid entity prefix!');
         }
 
         $merchantHandle = $this->config->getInterconnectPrefix();
 
-        if (!is_string($merchantHandle) || trim($merchantHandle) == '') {
+        if (!is_string($merchantHandle) || '' == trim($merchantHandle)) {
             throw new InterconnectException('Unable to format prefixed ID: Merchant handle not set!');
         }
 
         return Formatter::prefixID($id, $entityPrefix, $this->config->getInterconnectPrefix());
+    }
+
+    public function execute(\Magento\Framework\Event\Observer $observer)
+    {
+
     }
 }

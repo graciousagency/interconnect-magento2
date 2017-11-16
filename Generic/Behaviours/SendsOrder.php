@@ -3,7 +3,7 @@
 namespace Gracious\Interconnect\Generic\Behaviours;
 
 use Gracious\Interconnect\Http\Request\Client as InterconnectClient;
-use Gracious\Interconnect\Http\Request\Data\Order\Factory as OrderDataFactory;
+use Gracious\Interconnect\Http\Request\Data\Order as OrderDataFactory;
 use Gracious\Interconnect\Reporting\Logger;
 use Magento\Sales\Model\Order;
 use Throwable;

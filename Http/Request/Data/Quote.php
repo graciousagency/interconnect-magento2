@@ -1,8 +1,7 @@
 <?php
 
-namespace Gracious\Interconnect\Http\Request\Data\Quote;
+namespace Gracious\Interconnect\Http\Request\Data;
 
-use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
 use Gracious\Interconnect\Support\EntityType;
 use Gracious\Interconnect\Support\Formatter;
 use Gracious\Interconnect\Support\PriceCents;
@@ -11,14 +10,14 @@ use Magento\Catalog\Helper\Image as ImageHelper;
 use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\App\ObjectManager;
-use Magento\Quote\Model\Quote;
-use Magento\Quote\Model\Quote\Item as QuoteItem;
+use Magento\Quote\Model\Quote as QuoteModel;
+use Magento\Quote\Model\Quote\Item;
 
 /**
  * Class Factory
  * @package Gracious\Interconnect\Http\Request\Data\Quote
  */
-class Factory extends FactoryAbstract
+class Quote extends Data
 {
     /**
      * @var ImageHelper
@@ -35,7 +34,11 @@ class Factory extends FactoryAbstract
         parent::__construct();
     }
 
-    public function setupData(Quote $quote)
+    /**
+     * @param QuoteModel $quote
+     * @return array
+     */
+    public function setupData(QuoteModel $quote)
     {
         return [
             'quoteId' => $this->generateEntityId($quote->getId(), EntityType::QUOTE),
@@ -49,17 +52,17 @@ class Factory extends FactoryAbstract
     }
 
     /**
-     * @param Quote $quote
+     * @param QuoteModel $quote
      * @return array
      * @todo Do we implement any of the other product types?
      */
-    protected function getQuoteRows(Quote $quote)
+    protected function getQuoteRows(QuoteModel $quote)
     {
         $rows = [];
         $quoteItems = $quote->getAllItems();
 
         foreach ($quoteItems as $quoteItem) {
-            /* @var $quoteItem QuoteItem */
+            /* @var $quoteItem Item */
             /* @var $product Product */
             $product = $quoteItem->getProduct();
 
@@ -80,12 +83,13 @@ class Factory extends FactoryAbstract
     }
 
     /**
-     * @param Quote $quote
-     * @param QuoteItem $item
+     * @param QuoteModel $quote
+     * @param Item $quoteItem
      * @param Product $product
      * @return string[]
+     * @internal param QuoteItem $item
      */
-    protected function formatQuoteRow(Quote $quote, QuoteItem $quoteItem, Product $product)
+    protected function formatQuoteRow(QuoteModel $quote, Item $quoteItem, Product $product)
     {
         $image = $this->imageHelper->init($product, 'category_page_list')->getUrl();
 

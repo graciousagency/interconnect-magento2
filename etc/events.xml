@@ -1,10 +1,13 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
     <event name="checkout_onepage_controller_success_action">
-        <observer name="gracious_interconnect_checkout_onepage_controller_success_action" instance="Gracious\Interconnect\Observer\CheckoutOnePageControllerSuccessActionEventObserver" />
+        <observer name="gracious_interconnect_checkout_onepage_controller_success_action" instance="Gracious\Interconnect\Observer\CheckoutOnePageControllerSuccessAction" />
     </event>
     <event name="customer_register_success">
-        <observer name="gracious_interconnect_customer_register_success" instance="Gracious\Interconnect\Observer\CustomerRegisterSuccessEventObserver" />
+        <observer name="gracious_interconnect_customer_register_success" instance="Gracious\Interconnect\Observer\CustomerRegisterSuccess" />
+    </event>
+    <event name="sales_order_invoice_pay">
+        <observer name="gracious_interconnect_sales_order_invoice_pay" instance="Gracious\Interconnect\Observer\SalesOrderInvoicePay" />
     </event>
     <!--<event name="sales_quote_save_commit_after">-->
         <!--<observer name="interconnect_quote_save_commit_after" instance="Gracious\Interconnect\Observer\QuoteSaveCommitAfterEventObserver" />-->

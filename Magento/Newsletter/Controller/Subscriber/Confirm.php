@@ -4,7 +4,7 @@ namespace Gracious\Interconnect\Magento\Newsletter\Controller\Subscriber;
 
 use Exception;
 use Gracious\Interconnect\Http\Request\Client as InterconnectClient;
-use Gracious\Interconnect\Http\Request\Data\Subscriber\Factory as SubscriberFactory;
+use Gracious\Interconnect\Http\Request\Data\Subscriber\Subscriber as SubscriberFactory;
 use Gracious\Interconnect\Reporting\Logger;
 use Magento\Framework\App\ObjectManager;
 use Magento\Newsletter\Controller\Subscriber\Confirm as Base;

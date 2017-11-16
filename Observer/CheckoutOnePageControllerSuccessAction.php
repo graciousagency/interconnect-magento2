@@ -5,7 +5,7 @@ namespace Gracious\Interconnect\Observer;
 use Gracious\Interconnect\Generic\Behaviours\SendsOrder;
 use Gracious\Interconnect\Support\Validation\RegEx;
 use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Event\Observer;
+use Magento\Framework\Event\Observer as EventObserver;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\OrderRepository;
 
@@ -13,14 +13,14 @@ use Magento\Sales\Model\OrderRepository;
  * Class OrderObserver
  * @package Gracious\Interconnect\Observer
  */
-class CheckoutOnePageControllerSuccessActionEventObserver extends ObserverAbstract
+class CheckoutOnePageControllerSuccessAction extends Observer
 {
     use SendsOrder;
 
     /**
      * {@inheritdoc}
      */
-    public function execute(Observer $observer)
+    public function execute(EventObserver $observer)
     {
         if (!$this->config->isComplete()) {
             $this->logger->alert(__METHOD__ . '=> Unable to send data; the module\'s config values are not configured in the backend. Aborting....');

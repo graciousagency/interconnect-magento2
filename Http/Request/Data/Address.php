@@ -1,16 +1,15 @@
 <?php
-namespace Gracious\Interconnect\Http\Request\Data\Address;
+namespace Gracious\Interconnect\Http\Request\Data;
 
-use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
 use Gracious\Interconnect\Support\EntityType;
-use Magento\Customer\Model\Data\Address;
+use Magento\Customer\Model\Data\Address as AddressModel;
 
 
-class Factory extends FactoryAbstract
+class Address extends Data
 {
 
     /**
-     * @param Address|\Magento\Sales\Api\Data\OrderAddressInterface|\Magento\Customer\Api\Data\AddressInterface $address
+     * @param AddressModel|\Magento\Sales\Api\Data\OrderAddressInterface|\Magento\Customer\Api\Data\AddressInterface $address
      * @return array
      */
     public function setupData($address) {
@@ -26,7 +25,7 @@ class Factory extends FactoryAbstract
             'city'          => $address->getCity(),
             'country'       => $address->getCountryId(),
             'company'       => $address->getCompany(),
-            'telephone' => $address->getTelephone()
+            'telephone'     => $address->getTelephone()
         ];
     }
 }

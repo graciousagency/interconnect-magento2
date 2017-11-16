@@ -16,4 +16,5 @@ abstract class EntityType
     const QUOTE_ITEM                        = 'QuoteItem';
     const PRODUCT                           = 'Product';
     const ADDRESS                           = 'Address';
+    const INVOICE                           = 'Invoice';
 }

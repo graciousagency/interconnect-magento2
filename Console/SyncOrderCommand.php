@@ -13,7 +13,7 @@ use Gracious\Interconnect\Console\CommandAbstract;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Gracious\Interconnect\Http\Request\Client as InterconnectClient;
-use Gracious\Interconnect\Http\Request\Data\Order\Factory as OrderDataFactory;
+use Gracious\Interconnect\Http\Request\Data\Order as OrderDataFactory;
 
 
 class SyncOrderCommand extends CommandAbstract

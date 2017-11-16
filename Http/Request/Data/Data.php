@@ -12,10 +12,10 @@ use Magento\Framework\App\ObjectManager;
  * Class FactoryAbstract
  * @package Gracious\Interconnect\Http\Request\Data
  */
-abstract class FactoryAbstract
+abstract class Data
 {
     /**
-     * @var LoggerInterface
+     * @var Logger
      */
     protected $logger;
 
@@ -43,17 +43,17 @@ abstract class FactoryAbstract
      */
     protected final function generateEntityId($id, $entityPrefix)
     {
-        if ($id === null || trim($id) == '') {
+        if (null === $id || '' == trim($id)) {
             throw new Exception('Unable to format prefixed ID: invalid entity id!');
         }
 
-        if (!is_string($entityPrefix) || trim($entityPrefix) == '') {
+        if (!is_string($entityPrefix) || '' == trim($entityPrefix)) {
             throw new Exception('Unable to format prefixed ID: invalid entity prefix!');
         }
 
         $merchantHandle = $this->config->getInterconnectPrefix();
 
-        if (!is_string($merchantHandle) || trim($merchantHandle) == '') {
+        if (!is_string($merchantHandle) || '' == trim($merchantHandle)) {
             throw new Exception('Unable to format prefixed ID: Merchant handle not set!');
         }
 

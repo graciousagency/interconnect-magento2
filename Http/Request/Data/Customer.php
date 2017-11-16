@@ -1,10 +1,8 @@
 <?php
 
-namespace Gracious\Interconnect\Http\Request\Data\Customer;
+namespace Gracious\Interconnect\Http\Request\Data;
 
 use Exception;
-use Gracious\Interconnect\Http\Request\Data\Address\Factory as AddressFactory;
-use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
 use Gracious\Interconnect\Model\Customer as InterconnectCustomer;
 use Gracious\Interconnect\Support\EntityType;
 use Gracious\Interconnect\Support\Formatter;
@@ -12,8 +10,8 @@ use Gracious\Interconnect\Support\PriceCents;
 use Gracious\Interconnect\System\InvalidArgumentException;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterface as CustomerContract;
-use Magento\Customer\Model\Customer;
-use Magento\Customer\Model\Data\Address;
+use Magento\Customer\Model\Customer as CustomerModel;
+use Magento\Customer\Model\Data\Address as AddressModel;
 use Magento\Framework\App\ObjectManager;
 use Magento\Newsletter\Model\Subscriber;
 use Magento\Sales\Model\Order;
@@ -22,11 +20,11 @@ use Magento\Sales\Model\Order;
  * Class Factory
  * @package Gracious\Interconnect\Http\Request\Data\Customer
  */
-class Factory extends FactoryAbstract
+class Customer extends Data
 {
 
     /**
-     * @param CustomerContract|Customer $customer
+     * @param CustomerContract|CustomerModel $customer
      * @return array
      * @throws InvalidArgumentException
      */
@@ -113,7 +111,7 @@ class Factory extends FactoryAbstract
 
         // Nasty: Magento throws an exception if the address doesn't exist instead of just returning null
         try {
-            /* @var $address Address */
+            /* @var $address AddressModel */
             $address = $addressRepository->getById($addressId);
         } catch (Exception $e) {
             return null;
@@ -123,7 +121,7 @@ class Factory extends FactoryAbstract
     }
 
     /**
-     * @param Address|\Magento\Sales\Api\Data\OrderAddressInterface|\Magento\Customer\Api\Data\AddressInterface $address
+     * @param AddressModel|\Magento\Sales\Api\Data\OrderAddressInterface|\Magento\Customer\Api\Data\AddressInterface $address
      * @return array|null
      */
     protected function setupAddressData($address)
@@ -132,7 +130,7 @@ class Factory extends FactoryAbstract
             return null;
         }
 
-        $addressFactory = new AddressFactory();
+        $addressFactory = new Address();
 
         return $addressFactory->setupData($address);
     }

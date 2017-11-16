@@ -3,8 +3,8 @@
 namespace Gracious\Interconnect\Observer;
 
 use Gracious\Interconnect\Http\Request\Client as InterconnectClient;
-use Gracious\Interconnect\Http\Request\Data\Subscriber\Factory as SubscriberDataFactory;
-use Magento\Framework\Event\Observer;
+use Gracious\Interconnect\Http\Request\Data\Subscriber as SubscriberData;
+use Magento\Framework\Event\Observer as EventObserver;
 use Magento\Newsletter\Model\Subscriber;
 use Throwable;
 
@@ -12,12 +12,12 @@ use Throwable;
  * Class NewsletterManageSaveEventObserver
  * @package Gracious\Interconnect\Observer
  */
-class NewsletterSubscriberSaveCommitAfterEventObserver extends ObserverAbstract
+class NewsletterSubscriberSaveCommitAfter extends Observer
 {
     /**
      * {@inheritdoc}
      */
-    public function execute(Observer $observer)
+    public function execute(EventObserver $observer)
     {
         if (!$this->config->isComplete()) {
             $this->logger->error(__METHOD__ . ' :: Unable to start: module config values not configured (completely) in the backend. Aborting....');
@@ -27,7 +27,7 @@ class NewsletterSubscriberSaveCommitAfterEventObserver extends ObserverAbstract
 
         /* @var $subscriber Subscriber */
         $subscriber = $observer->getEvent()->getSubscriber();
-        $subscriberDataFactory = new SubscriberDataFactory();
+        $subscriberDataFactory = new SubscriberData();
 
         try {
             $requestData = $subscriberDataFactory->setupData($subscriber);

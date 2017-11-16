@@ -1,11 +1,8 @@
 <?php
 
-namespace Gracious\Interconnect\Http\Request\Data\Order;
+namespace Gracious\Interconnect\Http\Request\Data;
 
 use Exception;
-use Gracious\Interconnect\Http\Request\Data\Customer\Factory as CustomerFactory;
-use Gracious\Interconnect\Http\Request\Data\FactoryAbstract;
-use Gracious\Interconnect\Http\Request\Data\Order\Item\Factory as OrderItemFactory;
 use Gracious\Interconnect\Model\Order as InterconnectOrder;
 use Gracious\Interconnect\Support\EntityType;
 use Gracious\Interconnect\Support\Formatter;
@@ -14,22 +11,19 @@ use Gracious\Interconnect\Support\Text\Inflector;
 use Magento\Catalog\Helper\Image as ImageHelper;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\App\ObjectManager;
-use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order as OrderModel;
 
 /**
  * Class Factory
  * @package Gracious\Interconnect\Http\Request\Data\Order
  */
-class Factory extends FactoryAbstract
+class Order extends Data
 {
     /**
      * @var ImageHelper
      */
     protected $imageHelper;
 
-    /**
-     * Factory constructor.
-     */
     public function __construct()
     {
         $this->imageHelper = ObjectManager::getInstance()->create(ImageHelper::class);
@@ -38,14 +32,14 @@ class Factory extends FactoryAbstract
     }
 
     /**
-     * @param Order $order
+     * @param OrderModel $order
      * @return array
      */
-    public function setupData(Order $order)
+    public function setupData(OrderModel $order)
     {
         $quoteId = $order->getQuoteId();
         $prefixedQuoteId = $quoteId !== null ? $this->generateEntityId($quoteId, EntityType::QUOTE) : null;
-        $orderItemFactory = new OrderItemFactory();
+        $orderItemFactory = new OrderItem();
         $paymentMethod = Inflector::unSnakeCase($order->getPayment()->getMethod());
         $paymentMethod = ucwords($paymentMethod);
         $total = $order->getGrandTotal();
@@ -78,10 +72,10 @@ class Factory extends FactoryAbstract
     }
 
     /**
-     * @param Order $order
+     * @param OrderModel $order
      * @return string
      */
-    protected function getPaymentStatus(Order $order)
+    protected function getPaymentStatus(OrderModel $order)
     {
         $interconnectOrder = new InterconnectOrder($order);
         $paymentStatus = $interconnectOrder->getOrderPaymentStatus();
@@ -90,11 +84,11 @@ class Factory extends FactoryAbstract
     }
 
     /**
-     * @param Order $order
+     * @param OrderModel $order
      * @return string
      * Returns the shipping status of an order as a string, not a constant.
      */
-    protected function getOrderShipmentStatus(Order $order)
+    protected function getOrderShipmentStatus(OrderModel $order)
     {
         $shipments = $order->getShipmentsCollection();
 
@@ -115,13 +109,13 @@ class Factory extends FactoryAbstract
     }
 
     /**
-     * @param Order $order
+     * @param OrderModel $order
      * @return array
      */
-    protected function getOrderCustomerData(Order $order)
+    protected function getOrderCustomerData(OrderModel $order)
     {
         $customerData = null;
-        $customerFactory = new CustomerFactory();
+        $customerFactory = new Customer();
 
         if ($order->getCustomerIsGuest()) {
             return $customerFactory->setUpAnonymousCustomerDataFromOrder($order);
@@ -137,10 +131,10 @@ class Factory extends FactoryAbstract
     }
 
     /**
-     * @param Order $order
+     * @param OrderModel $order
      * @return \Magento\Customer\Api\Data\CustomerInterface|\Magento\Customer\Model\Customer|null
      */
-    protected function getOrderCustomer(Order $order)
+    protected function getOrderCustomer(OrderModel $order)
     {
         $customer = $order->getCustomer();
 
