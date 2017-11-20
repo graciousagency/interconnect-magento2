@@ -1,15 +1,16 @@
 <?php
+
 namespace Gracious\Interconnect\Magento\Newsletter\Controller\Subscriber;
 
 use Exception;
-use Magento\Framework\App\ObjectManager;
-use Magento\Newsletter\Model\Subscriber;
-use Gracious\Interconnect\Reporting\Logger;
-use Magento\Newsletter\Controller\Subscriber\NewAction as Base;
 use Gracious\Interconnect\Http\Request\Client as InterconnectClient;
-use Gracious\Interconnect\Http\Request\Data\Subscriber\Factory as SubscriberFactory;
+use Gracious\Interconnect\Http\Request\Data\Subscriber\Subscriber as SubscriberFactory;
+use Gracious\Interconnect\Reporting\Logger;
+use Magento\Framework\App\ObjectManager;
+use Magento\Newsletter\Controller\Subscriber\NewAction as MagentoNewAction;
+use Magento\Newsletter\Model\Subscriber;
 
-class NewAction extends Base
+class NewAction extends MagentoNewAction
 {
 
     /**
@@ -30,18 +31,18 @@ class NewAction extends Base
 
                 $status = $this->_subscriberFactory->create()->subscribe($email);
                 if ($status == \Magento\Newsletter\Model\Subscriber::STATUS_NOT_ACTIVE) {
-                    $this->messageManager->addSuccess(__('The confirmation request has been sent.'));
+                    $this->messageManager->addSuccessMessage(__('The confirmation request has been sent.'));
                 } else {
                     $this->sendSubscription($email);
-                    $this->messageManager->addSuccess(__('Thank you for your subscription.'));
+                    $this->messageManager->addSuccessMessage(__('Thank you for your subscription.'));
                 }
             } catch (\Magento\Framework\Exception\LocalizedException $e) {
-                $this->messageManager->addException(
+                $this->messageManager->addExceptionMessage(
                     $e,
                     __('There was a problem with the subscription: %1', $e->getMessage())
                 );
             } catch (\Exception $e) {
-                $this->messageManager->addException($e, __('Something went wrong with the subscription.'));
+                $this->messageManager->addExceptionMessage($e, __('Something went wrong with the subscription.'));
             }
         }
         $this->getResponse()->setRedirect($this->_redirect->getRedirectUrl());
@@ -50,18 +51,22 @@ class NewAction extends Base
     /**
      * @param string $emailAddress
      */
-    protected function sendSubscription($emailAddress) {
-        /* @var $subscriber Subscriber */ $subscriber = ObjectManager::getInstance()->create(Subscriber::class)->loadByEmail($emailAddress);
+    protected function sendSubscription($emailAddress)
+    {
+        /* @var $subscriber Subscriber */
+        $subscriber = ObjectManager::getInstance()->create(Subscriber::class)->loadByEmail($emailAddress);
 
-        if($subscriber !== null && $subscriber->getEmail() == $emailAddress) {
-            /* @var $client InterconnectClient */ $client = ObjectManager::getInstance()->create(InterconnectClient::class);
-            /* @var $logger Logger */ $logger = ObjectManager::getInstance()->create(Logger::class);
+        if ($subscriber !== null && $subscriber->getEmail() == $emailAddress) {
+            /* @var $client InterconnectClient */
+            $client = ObjectManager::getInstance()->create(InterconnectClient::class);
+            /* @var $logger Logger */
+            $logger = ObjectManager::getInstance()->create(Logger::class);
             $subscriberFactory = new SubscriberFactory();
 
             try {
                 $requestData = $subscriberFactory->setupData($subscriber);
                 $client->sendData($requestData, InterconnectClient::ENDPOINT_NEWSLETTER_SUBSCRIBER);
-            }catch (Exception $exception) {
+            } catch (Exception $exception) {
                 $logger->exception($exception);
 
                 return;

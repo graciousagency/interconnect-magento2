@@ -1,4 +1,5 @@
 <?php
+
 namespace Gracious\Interconnect\Support;
 
 use DateTime;
@@ -16,10 +17,11 @@ abstract class Formatter
      * @param string $merchantHandle
      * @return string
      */
-    public static function prefixID($ID, $entityTypeHandle, $merchantHandle) {
-        $entityTypeHandle = preg_replace('/_/','-', $entityTypeHandle);
+    public static function prefixID($ID, $entityTypeHandle, $merchantHandle)
+    {
+        $entityTypeHandle = preg_replace('/_/', '-', $entityTypeHandle);
 
-        return strtoupper($merchantHandle).'-'.strtoupper($entityTypeHandle).'-'.(string)$ID;
+        return strtoupper($merchantHandle) . '-' . strtoupper($entityTypeHandle) . '-' . (string)$ID;
     }
 
     /**
@@ -27,8 +29,9 @@ abstract class Formatter
      * @param string $dateString
      * @return string
      */
-    public static function formatDateStringToIso8601($dateString) {
-        if($dateString === null) {
+    public static function formatDateStringToIso8601($dateString)
+    {
+        if (null === $dateString) {
             return null;
         }
 
@@ -42,9 +45,10 @@ abstract class Formatter
      * @param string $prefix
      * @return string
      */
-    public static function prefixLastName($lastName, $prefix) {
-        if(is_string($prefix) && trim($prefix) != '') {
-            return $prefix.' '.$lastName;
+    public static function prefixLastName($lastName, $prefix)
+    {
+        if (is_string($prefix) && '' != trim($prefix)) {
+            return $prefix . ' ' . $lastName;
         }
 
         return $lastName;

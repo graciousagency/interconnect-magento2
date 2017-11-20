@@ -1,15 +1,15 @@
 <?php
+
 namespace Gracious\Interconnect\Model;
 
 use Exception;
-use Magento\Sales\Model\OrderFactory;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\App\Helper\AbstractHelper;
-use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
-use Gracious\Interconnect\Model\CustomerHistoricInfo;
+use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Framework\App\ObjectManager;
+use Magento\Sales\Model\OrderFactory;
 
-class Customer {
+class Customer
+{
 
     /**
      * @var string
@@ -26,20 +26,23 @@ class Customer {
      * @param string $email
      * @param null $customer
      */
-    public function __construct($email, $customer = null) {
+    public function __construct($email, $customer = null)
+    {
         $this->email = $email;
         $this->customer = $customer;
         $this->loadCustomer();
     }
 
-    protected function loadCustomer() {
-        if($this->customer === null) {
-            /* @var $customerRepository CustomerRepositoryInterface  */ $customerRepository = ObjectManager::getInstance()->create(CustomerRepositoryInterface::class);
+    protected function loadCustomer()
+    {
+        if ($this->customer === null) {
+            /* @var $customerRepository CustomerRepositoryInterface */
+            $customerRepository = ObjectManager::getInstance()->create(CustomerRepositoryInterface::class);
 
             try {
-                /* @var $customer CustomerInterface */ $customer = $customerRepository->get($this->email);
-            }catch (Exception $exception) {
-                // pfff, Magento throws an exception if it can't find the customer instead of just returning null
+                /* @var $customer CustomerInterface */
+                $customer = $customerRepository->get($this->email);
+            } catch (Exception $exception) {
                 $customer = null;
             }
 
@@ -50,7 +53,8 @@ class Customer {
     /**
      * @return CustomerHistoricInfo
      */
-    public function getCustomerHistoricInfo() {
+    public function getCustomerHistoricInfo()
+    {
         $orders = $this->getCustomerOrders();
         $totalOrderCount = count($orders);
         $totalOrderAmount = 0.00;
@@ -59,15 +63,15 @@ class Customer {
         $index = 0;
         $registrationDate = $this->customer != null ? $this->customer->getCreatedAt() : null;
 
-        foreach($orders as $order) {
+        foreach ($orders as $order) {
             /* @var $order \Magento\Sales\Model\Order\Interceptor */
-            $totalOrderAmount+= $order->getBaseGrandTotal();
+            $totalOrderAmount += $order->getBaseGrandTotal();
 
-            if($index == 0) {
+            if ($index == 0) {
                 $firstOrderDate = $order->getCreatedAt();
             }
 
-            if($index + 1 == $totalOrderCount) {
+            if ($index + 1 == $totalOrderCount) {
                 $lastOrderDate = $order->getCreatedAt();
             }
 
@@ -80,8 +84,10 @@ class Customer {
     /**
      * @return \Magento\Framework\DataObject[]
      */
-    public function getCustomerOrders() {
-        /* @var $orderFactory OrderFactory */ $orderFactory = ObjectManager::getInstance()->create(OrderFactory::class);
+    public function getCustomerOrders()
+    {
+        /* @var $orderFactory OrderFactory */
+        $orderFactory = ObjectManager::getInstance()->create(OrderFactory::class);
         $orders = $orderFactory->create()
             ->getCollection()
             ->addFieldToFilter('customer_email', $this->email)

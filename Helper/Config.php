@@ -1,8 +1,9 @@
 <?php
+
 namespace Gracious\Interconnect\Helper;
 
-use \Magento\Store\Model\ScopeInterface;
-use \Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Store\Model\ScopeInterface;
 
 /**
  * Class Config
@@ -11,9 +12,9 @@ use \Magento\Framework\App\Helper\AbstractHelper;
 class Config extends AbstractHelper
 {
 
-    const XML_PATH_SERVICE_BASE_URL     = 'gracious_interconnect/settings/baseurl';
-    const XML_PATH_PREFIX               = 'gracious_interconnect/settings/prefix';
-    const XML_PATH_API_KEY              = 'gracious_interconnect/settings/apikey';
+    const XML_PATH_SERVICE_BASE_URL = 'gracious_interconnect/settings/baseurl';
+    const XML_PATH_PREFIX = 'gracious_interconnect/settings/prefix';
+    const XML_PATH_API_KEY = 'gracious_interconnect/settings/apikey';
 
     /**
      * @var string[]
@@ -24,7 +25,8 @@ class Config extends AbstractHelper
      * Returns the base url for the webservice from the application's main config
      * @return string
      */
-    public function getInterconnectServiceBaseUrl() {
+    public function getInterconnectServiceBaseUrl()
+    {
         return $this->getLazy(static::XML_PATH_SERVICE_BASE_URL);
     }
 
@@ -32,14 +34,16 @@ class Config extends AbstractHelper
      * Returns the base url for the webservice from the application's main config
      * @return string
      */
-    public function getInterconnectPrefix() {
+    public function getInterconnectPrefix()
+    {
         return $this->getLazy(static::XML_PATH_PREFIX);
     }
 
     /**
      * @return string
      */
-    public function getApiKey() {
+    public function getApiKey()
+    {
         return $this->getLazy(static::XML_PATH_API_KEY);
     }
 
@@ -48,8 +52,9 @@ class Config extends AbstractHelper
      * @param string $xmlPath
      * @return string
      */
-    protected function getLazy($xmlPath) {
-        if(!isset($this->lazyData[$xmlPath])) {
+    protected function getLazy($xmlPath)
+    {
+        if (!isset($this->lazyData[$xmlPath])) {
             $this->lazyData[$xmlPath] = $this->scopeConfig->getValue($xmlPath, ScopeInterface::SCOPE_STORE);
         }
 
@@ -60,14 +65,14 @@ class Config extends AbstractHelper
      * @return bool
      * Returns whether the required config values are set
      */
-    public function isComplete() {
-        $serviceBaseUrl = $this->getInterconnectServiceBaseUrl();
-        $interconnectPrefix = $this->getInterconnectPrefix();
-        $apiKey = $this->getApiKey();
+    public function isComplete()
+    {
+        $serviceBaseUrl = trim($this->getInterconnectServiceBaseUrl());
+        $interconnectPrefix = trim($this->getInterconnectPrefix());
+        $apiKey = trim($this->getApiKey());
 
-        return (is_string($serviceBaseUrl) && trim($serviceBaseUrl) != '') &&
-            (is_string($interconnectPrefix) && trim($interconnectPrefix) != '') &&
-            (is_string($apiKey) && trim($apiKey) != '')
-            ;
+        return is_string($serviceBaseUrl) &&
+               is_string($interconnectPrefix) &&
+               is_string($apiKey);
     }
 }

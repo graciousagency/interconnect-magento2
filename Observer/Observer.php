@@ -1,17 +1,17 @@
 <?php
+
 namespace Gracious\Interconnect\Observer;
 
-use Exception;
-use Magento\Catalog\Helper\Image;
 use Gracious\Interconnect\Helper\Config;
+use Gracious\Interconnect\Http\Request\Client;
 use Gracious\Interconnect\Reporting\Logger;
 use Gracious\Interconnect\Support\Formatter;
-use Gracious\Interconnect\Http\Request\Client;
-use Magento\Framework\Event\ObserverInterface;
-use Gracious\Interconnect\System\InvalidArgumentException;
 use Gracious\Interconnect\System\Exception as InterconnectException;
+use Gracious\Interconnect\System\InvalidArgumentException;
+use Magento\Catalog\Helper\Image;
+use Magento\Framework\Event\ObserverInterface;
 
-abstract class ObserverAbstract implements ObserverInterface
+abstract class Observer implements ObserverInterface
 {
 
     /**
@@ -39,6 +39,8 @@ abstract class ObserverAbstract implements ObserverInterface
      * ObserverAbstract constructor.
      * @param Logger $logger
      * @param Config $config
+     * @param Client $client
+     * @param Image $imageHelper
      */
     public function __construct(Logger $logger, Config $config, Client $client, Image $imageHelper)
     {
@@ -55,21 +57,19 @@ abstract class ObserverAbstract implements ObserverInterface
      * @throws InterconnectException;
      * @throws InvalidArgumentException
      */
-    public function generateEntityId($id, $entityPrefix) {
-        if($id === null || trim($id) == '') {
-            // Throw an exception because formatting a unique handle is a critical step
+    public function generateEntityId($id, $entityPrefix)
+    {
+        if (null === $id || '' == trim($id)) {
             throw new InvalidArgumentException('Unable to format prefixed ID: invalid entity id!');
         }
 
-        if(!is_string($entityPrefix) || trim($entityPrefix) == '') {
-            // Throw an exception because formatting a unique handle is a critical step
+        if (!is_string($entityPrefix) || '' == trim($entityPrefix)) {
             throw new InvalidArgumentException('Unable to format prefixed ID: invalid entity prefix!');
         }
 
         $merchantHandle = $this->config->getInterconnectPrefix();
 
-        if(!is_string($merchantHandle) || trim($merchantHandle) == '') {
-            // Throw an exception because formatting a unique handle is a critical step
+        if (!is_string($merchantHandle) || '' == trim($merchantHandle)) {
             throw new InterconnectException('Unable to format prefixed ID: Merchant handle not set!');
         }
 

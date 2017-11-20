@@ -1,22 +1,23 @@
 <?php
+
 namespace Gracious\Interconnect\Http\Request;
 
+use Gracious\Interconnect\Foundation\Environment;
+use Gracious\Interconnect\Helper\Config;
+use Gracious\Interconnect\Reporting\Logger;
+use Gracious\Interconnect\System\Exception as InterconnectException;
+use Zend\Http\Client as ZendHttpClient;
+use Zend\Http\Client\Adapter\Curl;
 use Zend\Http\Headers;
 use Zend\Http\Request;
 use Zend\Http\Response;
-use Zend\Http\Client as Base;
-use Gracious\Interconnect\Helper\Config;
-use Gracious\Interconnect\Reporting\Logger;
-use Gracious\Interconnect\Foundation\Environment;
-use Zend\Http\Client\Adapter\Curl as CurlAdapter;
-use Gracious\Interconnect\System\Exception as InterconnectException;
 
-class Client extends Base
+class Client
 {
-    const ENDPOINT_CUSTOMER                             = 'customer/register';
-    const ENDPOINT_NEWSLETTER_SUBSCRIBER                = 'newsletter/subscribe/popup';
-    const ENDPOINT_ORDER                                = 'order/process';
-    const ENDPOINT_QUOTE                                = 'quote/process';
+    const ENDPOINT_CUSTOMER = 'customer/register';
+    const ENDPOINT_NEWSLETTER_SUBSCRIBER = 'newsletter/subscribe/popup';
+    const ENDPOINT_ORDER = 'order/process';
+    const ENDPOINT_QUOTE = 'quote/process';
 
     /**
      * @var string
@@ -34,6 +35,11 @@ class Client extends Base
     protected $logger;
 
     /**
+     * @var \Gracious\Interconnect\Http\Request\Client
+     */
+    private $client;
+
+    /**
      * Client constructor.
      * @param Config $config
      * @param Logger $logger
@@ -42,25 +48,24 @@ class Client extends Base
     {
         $this->helperConfig = $config;
         $this->logger = $logger;
+        $this->client = new ZendHttpClient();
         $this->setBaseUrl($config->getInterconnectServiceBaseUrl());
-
-        parent::__construct(null, null );
     }
 
     /**
      * @param string $baseUrl
      * @return Client
      */
-    public function setBaseUrl($baseUrl) {
+    protected function setBaseUrl($baseUrl)
+    {
         $this->baseUrl = rtrim($baseUrl, '/');
-
-        return $this;
     }
 
     /**
      * @return string
      */
-    public function getBaseUrl() {
+    protected function getBaseUrl()
+    {
         return $this->baseUrl;
     }
 
@@ -70,29 +75,26 @@ class Client extends Base
      * @throws InterconnectException
      * @throws \Zend\Http\Client\Exception\RuntimeException
      */
-    public function sendData(array $data, $endPoint) {
-        if($this->baseUrl === null){
+    public function sendData(array $data, $endPoint)
+    {
+        if (null === $this->baseUrl) {
             throw new InterconnectException('Unable to make request: base url not set');
         }
 
-        if(Environment::isInDeveloperMode()) {
-            // Overcome ssl problems on local machine
-            $this->logger->notice(__METHOD__.'=> Local machine; disabling ssl checks...');
-            $curlAdapter = new CurlAdapter();
+        if (Environment::isInDeveloperMode()) {
+            $curlAdapter = new Curl();
             $curlAdapter->setCurlOption(CURLOPT_SSL_VERIFYPEER, false);
             $curlAdapter->setCurlOption(CURLOPT_SSL_VERIFYHOST, false);
-            $this->setAdapter($curlAdapter);
+            $this->client->setAdapter($curlAdapter);
         }
 
         $metaData = Environment::getInstance();
         $json = json_encode($data);
 
-        if(Environment::isInDeveloperMode()) {
-            $this->logger->info(str_repeat('*****', 30));
-            $this->logger->info(__METHOD__.':: Posting to \''.$this->baseUrl.'/'.$endPoint.'\'. Data = '.$json);
+        if (Environment::isInDeveloperMode()) {
+            $this->logger->info(__METHOD__ . ':: Posting to \'' . $this->baseUrl . '/' . $endPoint . '\'. Data = ' . $json);
         }
 
-        $request = new Request();
         $headers = new Headers();
         $headers->addHeaders([
             'Content-Type' => 'application/json',
@@ -104,33 +106,32 @@ class Client extends Base
             'X-Domain' => $metaData->getDomain()
         ]);
 
+        $request = new Request();
         $request->setMethod(Request::METHOD_POST)
-            ->setUri($this->baseUrl.'/'.$endPoint)
+            ->setUri($this->baseUrl . '/' . $endPoint)
             ->setHeaders($headers)
             ->setContent($json);
 
-        $response = $this->send($request);
-
-        $this->processResponse($response);
+        $this->processResponse(
+            $this->client->send($request)
+        );
     }
 
     /**
      * @param Response $response
      * @throws InterconnectException
      */
-    protected function processResponse(Response $response) {
-        $request = $this->getRequest();
-        $statusCode = $response->getStatusCode();
-        $success = ($statusCode == 200);
+    protected function processResponse(Response $response)
+    {
+        $request = $this->client->getRequest();
 
-        if(!$success) {
-            $this->logger->error('Response status = '.$statusCode.', response = '.(string)$response);
-
-            throw new InterconnectException('Error making request to \''.$request->getUriString().'\' with http status code :'.$statusCode.' and response '.(string)$response);
+        if ($response->isOk()) {
+            $this->logger->error('Response status = ' . $response->getStatusCode() . ', response = ' . (string)$response);
+            throw new InterconnectException('Error making request to \'' . $request->getUriString() . '\' with http status code :' . $response->getStatusCode() . ' and response ' . (string)$response);
         }
 
-        if(Environment::isInDeveloperMode()) {
-            $this->logger->info('Data sent to: '.$request->getUriString().'. All done here...');
+        if (Environment::isInDeveloperMode()) {
+            $this->logger->info('Data sent to: ' . $request->getUriString() . '. All done here...');
         }
     }
 }
