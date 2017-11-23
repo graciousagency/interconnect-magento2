@@ -64,7 +64,7 @@ class NewAction extends MagentoNewAction
             $subscriberFactory = new SubscriberFactory();
 
             try {
-                $source = (string)$this->getRequest()->getPost('source');
+                $source = (string)$this->getRequest()->getPost('source','default');
                 $requestData = $subscriberFactory->setupData($subscriber);
                 $requestData['source'] = $source;
 
