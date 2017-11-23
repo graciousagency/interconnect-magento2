@@ -65,8 +65,11 @@ class NewAction extends MagentoNewAction
 
             try {
                 $source = (string)$this->getRequest()->getPost('source','default');
+                $campaign = (string)$this->getRequest()->getPost('campaign','');
+                
                 $requestData = $subscriberFactory->setupData($subscriber);
                 $requestData['source'] = $source;
+                $requestData['campaign'] = $campaign;
 
                 $client->sendData($requestData, InterconnectClient::ENDPOINT_NEWSLETTER_SUBSCRIBER);
             } catch (Exception $exception) {
