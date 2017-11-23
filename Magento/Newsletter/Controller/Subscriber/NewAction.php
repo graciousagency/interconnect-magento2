@@ -64,7 +64,10 @@ class NewAction extends MagentoNewAction
             $subscriberFactory = new SubscriberFactory();
 
             try {
+                $source = (string)$this->getRequest()->getPost('source');
                 $requestData = $subscriberFactory->setupData($subscriber);
+                $requestData['source'] = $source;
+
                 $client->sendData($requestData, InterconnectClient::ENDPOINT_NEWSLETTER_SUBSCRIBER);
             } catch (Exception $exception) {
                 $logger->exception($exception);
