@@ -29,6 +29,6 @@ class SalesOrderInvoicePay extends Observer
             return;
         }
 
-        $this->logger->info(__METHOD__ . ' :: Quote sent to Interconnect (' . $quote->getId() . ')');
+        $this->logger->info(__METHOD__ . ' :: Invoice sent to Interconnect (' . $invoice->getId() . ')');
     }
 }
