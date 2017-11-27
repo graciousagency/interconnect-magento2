@@ -23,7 +23,7 @@ class Invoice extends Data
             'incrementId' => $invoice->getOrder()->getIncrementId(),
             'paymentStatus' => (string) $invoice->getStateName($invoice->getState()),
             'totalAmountInCents' => PriceCents::create($invoice->getGrandTotal())->toInt(),
-            'method' => $invoice->getOrder()->getPayment()->getMethod()
+            'paymentMethod' => $invoice->getOrder()->getPayment()->getMethod()
         ];
     }
 }
