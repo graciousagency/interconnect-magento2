@@ -18,6 +18,7 @@ class Client
     const ENDPOINT_NEWSLETTER_SUBSCRIBER = 'newsletter/subscribe/popup';
     const ENDPOINT_ORDER = 'order/process';
     const ENDPOINT_QUOTE = 'quote/process';
+    const ENDPOINT_INVOICE = 'invoice/process';
 
     /**
      * @var string
