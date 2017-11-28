@@ -3,6 +3,7 @@ namespace Gracious\Interconnect\Reporting;
 
 use Exception;
 use Monolog\Logger as Base;
+use Throwable;
 
 /**
  * Class Logger
@@ -12,9 +13,9 @@ use Monolog\Logger as Base;
 class Logger extends Base
 {
     /**
-     * @param Exception $exception
+     * @param Throwable $exception
      */
-    public function exception(Exception $exception) {
+    public function exception(Throwable $exception) {
         $this->alert('*** EXCEPTION ' . str_repeat('*****', 20));
         $this->alert('*** Type: ' . get_class($exception));
         $this->alert('*** File: ' . $exception->getFile());

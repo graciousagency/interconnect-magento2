@@ -19,6 +19,8 @@ class Client
     const ENDPOINT_ORDER = 'order/process';
     const ENDPOINT_QUOTE = 'quote/process';
     const ENDPOINT_INVOICE = 'invoice/process';
+    const ENDPOINT_REGISTER_BILLING_ADDRESS = 'customer/register/billing-address';
+    const ENDPOINT_REGISTER_SHIPPING_ADDRESS = 'customer/register/shipping-address';
 
     /**
      * @var string

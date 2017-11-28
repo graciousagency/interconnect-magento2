@@ -106,10 +106,10 @@ class Customer extends Data
 
         /* @var $address Address */
         $address = null;
+
         /* @var AddressRepositoryInterface $addressRepository */
         $addressRepository = ObjectManager::getInstance()->create(AddressRepositoryInterface::class);
 
-        // Nasty: Magento throws an exception if the address doesn't exist instead of just returning null
         try {
             /* @var $address AddressModel */
             $address = $addressRepository->getById($addressId);

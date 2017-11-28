@@ -9,6 +9,9 @@
     <event name="sales_order_invoice_pay">
         <observer name="gracious_interconnect_sales_order_invoice_pay" instance="Gracious\Interconnect\Observer\SalesOrderInvoicePay" />
     </event>
+    <event name="customer_address_save_after">
+        <observer name="gracious_interconnect_customer_address_save_after" instance="Gracious\Interconnect\Observer\CustomerAddressSaveAfter" />
+    </event>
     <!--<event name="sales_quote_save_commit_after">-->
         <!--<observer name="interconnect_quote_save_commit_after" instance="Gracious\Interconnect\Observer\QuoteSaveCommitAfterEventObserver" />-->
     <!--</event>-->
