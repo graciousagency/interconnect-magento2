@@ -11,7 +11,7 @@ class Shipment extends Data
 
         $data = [
             'orderId' => $shipment->getShipment()->getData('order_id'),
-            'email' => $shipment->getShipment()->getOrder()->getData('customer_email'),
+            'emailAddress' => $shipment->getShipment()->getOrder()->getData('customer_email'),
         ];
 
         if ($totalItemsInOrder === $totalItemsInShipment) {
