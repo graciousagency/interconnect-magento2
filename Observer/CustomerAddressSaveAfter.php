@@ -28,8 +28,8 @@ class CustomerAddressSaveAfter extends Observer
             $address = new Address();
             if ($observer->getEvent()->getData('customer_address')->getData('is_default_billing')) {
                 $this->client->sendData(
-                    array_replace_recursive([
-                        'emailAddress' => $email],
+                    array_replace_recursive(
+                        ['emailAddress' => $email],
                         $address->setupData($customerAddress)
                     ),
                     InterconnectClient::ENDPOINT_REGISTER_BILLING_ADDRESS
@@ -37,12 +37,11 @@ class CustomerAddressSaveAfter extends Observer
             }
 
             if ($observer->getEvent()->getData('customer_address')->getData('is_default_shipping')) {
-                $this->client->sendData([
-                    array_replace_recursive([
-                        'email' => $email],
+                $this->client->sendData(
+                    array_replace_recursive(
+                        ['email' => $email],
                         $address->setupData($customerAddress)
                     ),
-                ],
                     InterconnectClient::ENDPOINT_REGISTER_SHIPPING_ADDRESS
                 );
             }

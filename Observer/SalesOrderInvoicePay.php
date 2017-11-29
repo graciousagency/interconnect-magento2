@@ -22,7 +22,7 @@ class SalesOrderInvoicePay extends Observer
 
         try {
             $invoiceData = $invoice->setupData($invoiceModel);
-            $this->client->sendData($invoiceData, Client::ENDPOINT_INVOICE);
+            $this->client->sendData($invoiceData, Client::ENDPOINT_ORDER_SHIPPING);
         } catch (Throwable $exception) {
             $this->logger->exception($exception);
 

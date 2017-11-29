@@ -21,6 +21,7 @@ class Client
     const ENDPOINT_INVOICE = 'invoice/process';
     const ENDPOINT_REGISTER_BILLING_ADDRESS = 'customer/register/billing-address';
     const ENDPOINT_REGISTER_SHIPPING_ADDRESS = 'customer/register/shipping-address';
+    const ENDPOINT_ORDER_SHIPPING = 'order/shipping';
 
     /**
      * @var string
@@ -128,7 +129,7 @@ class Client
     {
         $request = $this->client->getRequest();
 
-        if ($response->isOk()) {
+        if (!$response->isOk()) {
             $this->logger->error('Response status = ' . $response->getStatusCode() . ', response = ' . (string)$response);
             throw new InterconnectException('Error making request to \'' . $request->getUriString() . '\' with http status code :' . $response->getStatusCode() . ' and response ' . (string)$response);
         }
