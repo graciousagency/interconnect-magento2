@@ -15,6 +15,7 @@ use Zend\Http\Response;
 class Client
 {
     const ENDPOINT_CUSTOMER = 'customer/register';
+    const ENDPOINT_CUSTOMER_REFRESH = 'customer/refresh';
     const ENDPOINT_NEWSLETTER_SUBSCRIBER = 'newsletter/subscribe/popup';
     const ENDPOINT_ORDER = 'order/process';
     const ENDPOINT_QUOTE = 'quote/process';
