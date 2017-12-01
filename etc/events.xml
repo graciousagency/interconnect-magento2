@@ -15,6 +15,9 @@
     <event name="sales_order_shipment_save_after">
         <observer name="gracious_interconnect_sales_order_shipment_save_after" instance="Gracious\Interconnect\Observer\SalesOrderShipmentSaveAfter" />
     </event>
+    <event name="customer_save_after_data_object">
+        <observer name="gracious_interconnect_customer_save_after_data_object" instance="Gracious\Interconnect\Observer\CustomerSaveAfterDataObject" />
+    </event>
     <!--<event name="sales_quote_save_commit_after">-->
         <!--<observer name="interconnect_quote_save_commit_after" instance="Gracious\Interconnect\Observer\QuoteSaveCommitAfterEventObserver" />-->
     <!--</event>-->
