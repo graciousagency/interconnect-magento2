@@ -50,6 +50,35 @@ class Customer
         }
     }
 
+    public function setupData()
+    {
+
+        $address = [
+            'emailAddress' => $this->customer->getEmail(),
+            'street' => '',
+            'zipcode' => '',
+            'city' => '',
+            'country' => '',
+            'company' => ''
+        ];
+        $data = [
+            'customerId' => $this->customer->getId(),
+            'firstName' => $this->customer->getFirstName(),
+            'lastName' => $this->customer->getLastName(),
+            'emailAddress' => $this->customer->getEmail(),
+            'phoneNumber' => '',
+            'gender' => '',
+            'billingAddress' => $address,
+            'shippingAddress' => $address,
+            'isAnonymous' => true,
+            'totalOrderCount' => 0,
+            'totalOrderAmount' => 0,
+        ];
+
+        return $data;
+
+    }
+
     /**
      * @return CustomerHistoricInfo
      */
