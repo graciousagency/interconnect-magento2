@@ -49,6 +49,7 @@ class Order extends Data
         $discountType = (is_string($couponCode) && trim($couponCode)) != '' ? 'Coupon' : $order->getDiscountDescription();
 
         return [
+            'storeId' => $order->getStoreId(),
             'orderId' => $this->generateEntityId($order->getId(), EntityType::ORDER),
             'quoteId' => $prefixedQuoteId,
             'incrementId' => $order->getIncrementId(),

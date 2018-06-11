@@ -18,6 +18,7 @@ class Invoice extends Data
         $prefixedQuoteId = (null !== $quoteId) ? $this->generateEntityId($quoteId, EntityType::QUOTE) : null;
 
         return [
+            'storeId' => $invoice->getStoreId(),
             'orderId' => $this->generateEntityId($invoice->getOrderId(), EntityType::ORDER),
             'quoteId' => $prefixedQuoteId,
             'incrementId' => $invoice->getOrder()->getIncrementId(),

@@ -41,6 +41,7 @@ class Customer extends Data
         $historicInfo = $interconnectCustomer->getCustomerHistoricInfo();
 
         return [
+            'storeId' => $customer->getStoreId(),
             'customerId' => $this->generateEntityId($customerId, EntityType::CUSTOMER),
             'firstName' => $customer->getFirstname(),
             'lastName' => Formatter::prefixLastName($customer->getLastname(), $prefix),
@@ -74,6 +75,7 @@ class Customer extends Data
         $historicInfo = $interconnectCustomer->getCustomerHistoricInfo();
 
         return [
+            'storeId' => $order->getStoreId(),
             'customerId' => null,
             'firstName' => $billingAddress->getFirstname(),
             'lastName' => Formatter::prefixLastName($billingAddress->getLastname(), $billingAddress->getPrefix()),

@@ -41,6 +41,7 @@ class Quote extends Data
     public function setupData(QuoteModel $quote)
     {
         return [
+            'storeId' => $quote->getStoreId(),
             'quoteId' => $this->generateEntityId($quote->getId(), EntityType::QUOTE),
             'totalAmount' => PriceCents::create($quote->getBaseGrandTotal())->toInt(),
             'quantity' => (int)$quote->getItemsQty(),
@@ -94,6 +95,7 @@ class Quote extends Data
         $image = $this->imageHelper->init($product, 'category_page_list')->getUrl();
 
         return [
+            'storeId' => $quote->getStoreId(),
             'itemId' => $this->generateEntityId($quoteItem->getItemId(), EntityType::QUOTE_ITEM),
             'quoteId' => $this->generateEntityId($quote->getId(), EntityType::QUOTE),
             'productId' => $this->generateEntityId($product->getId(), EntityType::PRODUCT),

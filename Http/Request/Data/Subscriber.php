@@ -23,6 +23,7 @@ class Subscriber extends Data
         $prefixedSubscriberId = $this->generateEntityId($subscriberId, EntityType::NEWSLETTER_SUBSCRIPTION);
 
         return [
+            'storeId' => $subscriber->getStoreId(),
             'subscriptionId' => $prefixedSubscriberId,
             'emailAddress' => $subscriber->getEmail(),
             'optIn' => $subscriber->isSubscribed(),
