@@ -10,6 +10,7 @@ class Shipment extends Data
         $totalItemsInShipment = count($shipment->getShipment()->getItems());
 
         $data = [
+            'storeId' => $shipment->getStoreId(),
             'orderId' => $shipment->getShipment()->getData('order_id'),
             'emailAddress' => $shipment->getShipment()->getOrder()->getData('customer_email'),
         ];

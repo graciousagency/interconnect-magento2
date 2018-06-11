@@ -77,6 +77,7 @@ class OrderItem extends Data
         $image = $this->imageHelper->init($product, 'category_page_list')->getUrl();
 
         return [
+            'storeId' => $order->getStoreId(),
             'emailAddress' => $order->getCustomerEmail(),
             'orderId' => $this->generateEntityId($order->getId(), EntityType::ORDER),
             'itemId' => $this->generateEntityId($orderItem->getItemId(), EntityType::ORDER_ITEM),
