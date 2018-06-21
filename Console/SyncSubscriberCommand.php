@@ -39,7 +39,7 @@ class SyncSubscriberCommand extends CommandAbstract
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!$this->config->isComplete()) {
-            $output->writeln('Unable to rock and roll: module config values not configured (completely) in the backend. Aborting....');
+            $output->writeln('module config values not configured (completely) in the backend. Aborting....');
 
             return;
         }

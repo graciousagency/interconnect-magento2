@@ -25,4 +25,13 @@
             </argument>
         </arguments>
     </type>
+
+    <type name="Gracious\Interconnect\Api\CopernicaInterface">
+        <arguments>
+            <argument name="subscriberFactory" xsi:type="object">Magento\Newsletter\Model\SubscriberFactory</argument>
+        </arguments>
+    </type>
+
+    <preference for="Gracious\Interconnect\Api\CopernicaInterface" type="Gracious\Interconnect\Api\Copernica" />
+
 </config>

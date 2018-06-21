@@ -1,14 +1,15 @@
 <?php
+
 namespace Gracious\Interconnect\Console;
 
 use Exception;
-use Magento\Framework\App\State;
 use Gracious\Interconnect\Helper\Config;
-use Gracious\Interconnect\Reporting\Logger;
 use Gracious\Interconnect\Http\Request\Client;
-use Symfony\Component\Console\Command\Command;
+use Gracious\Interconnect\Reporting\Logger;
 use Gracious\Interconnect\Support\Validation\RegEx;
 use Gracious\Interconnect\System\Exception as InterconnectException;
+use Magento\Framework\App\State;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * Class CommandAbstract
@@ -39,8 +40,6 @@ abstract class CommandAbstract extends Command
      */
     public function __construct(State $state, Logger $logger, Client $client, Config $config)
     {
-        $this->setAreaCode($state);
-        
         parent::__construct();
 
         $this->logger = $logger;
@@ -51,10 +50,11 @@ abstract class CommandAbstract extends Command
     /**
      * @param State $state
      */
-    protected function setAreaCode(State $state) {
+    protected function setAreaCode(State $state)
+    {
         try {
             $state->getAreaCode();
-        }catch (Exception $exception) {
+        } catch (Exception $exception) {
             $state->setAreaCode('adminhtml');
         }
     }
@@ -63,12 +63,13 @@ abstract class CommandAbstract extends Command
      * @param mixed $value
      * @throws InterconnectException
      */
-    protected function evalInt($value) {
+    protected function evalInt($value)
+    {
         // Cast to string if it's a numeric type because regex evaluates strings
         $value = is_numeric($value) ? (string)$value : $value;
 
-        if(!is_string($value) || !RegEx::test(RegEx::INT, $value)) {
-            throw new InterconnectException('Expected integer but got '.gettype($value));
+        if (!is_string($value) || !RegEx::test(RegEx::INT, $value)) {
+            throw new InterconnectException('Expected integer but got ' . gettype($value));
         }
     }
 }
