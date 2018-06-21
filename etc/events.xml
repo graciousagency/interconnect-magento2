@@ -18,6 +18,9 @@
     <event name="customer_save_after_data_object">
         <observer name="gracious_interconnect_customer_save_after_data_object" instance="Gracious\Interconnect\Observer\CustomerSaveAfterDataObject" />
     </event>
+    <event name="controller_action_postdispatch_checkout_cart_add">
+        <observer name="gracious_interconnect_checkout_cart_product_add_after" instance="Gracious\Interconnect\Observer\CheckoutCartProductAddAfter" />
+    </event>
     <!--<event name="sales_quote_save_commit_after">-->
         <!--<observer name="interconnect_quote_save_commit_after" instance="Gracious\Interconnect\Observer\QuoteSaveCommitAfterEventObserver" />-->
     <!--</event>-->

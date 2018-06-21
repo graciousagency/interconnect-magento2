@@ -52,7 +52,7 @@ class SyncCustomerCommand extends CommandAbstract
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if(!$this->config->isComplete()) {
-            $output->write('Unable to rock and roll: module config values not configured (completely) in the backend. Aborting....');
+            $output->write('module config values not configured (completely) in the backend. Aborting....');
 
             return;
         }
