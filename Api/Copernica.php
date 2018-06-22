@@ -50,9 +50,9 @@ class Copernica implements CopernicaInterface
     }
 
     /**
-     * @return void
+     * @return bool
      */
-    public function updateProfile()
+    public function updateProfile(): bool
     {
         if (!$this->usedCorrectSecret()) {
             throw new \RuntimeException('Invalid or empty X-Secret sent');
@@ -70,11 +70,15 @@ class Copernica implements CopernicaInterface
         $subscriber = $this->subscriberFactory->create()->loadByEmail($data['fields']['email']);
         if ((empty($data['fields']['newsletter']) || 'unsubscribed' === $data['fields']['newsletter']) && ($subscriber->getId() && Subscriber::STATUS_SUBSCRIBED == $subscriber->getSubscriberStatus())) {
             $subscriber->unsubscribe($data['fields']['email']);
+            return true;
         }
 
         if (!empty($data['fields']['newsletter']) && 'subscribed' === $data['fields']['newsletter'] && Subscriber::STATUS_SUBSCRIBED !== $subscriber->getSubscriberStatus()) {
             $subscriber->subscribe($data['fields']['email']);
+            return true;
         }
+
+        return false;
     }
 
     /**
