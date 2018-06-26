@@ -9,7 +9,8 @@
             "email": "info@gracious.nl"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "magento/product-community-edition": ">=2.0 <3.0.0"
     },
