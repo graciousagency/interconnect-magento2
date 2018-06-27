@@ -104,8 +104,6 @@ class Client
         $headers->addHeaders([
             'Content-Type' => 'application/json',
             'X-Secret' => $this->helperConfig->getApiKey(),
-            'X-ModuleType' => $metaData->getModuleType(),
-            'X-ModuleVersion' => $metaData->getModuleVersion(),
             'X-AppHandle' => 'magento2',
             'X-AppVersion' => $metaData->getMagentoVersion(),
             'X-Domain' => $metaData->getDomain()
