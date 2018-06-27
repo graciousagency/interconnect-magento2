@@ -62,6 +62,7 @@ class Customer
             'company' => ''
         ];
         $data = [
+            'storeId' => $this->customer->getStoreId(),
             'customerId' => $this->customer->getId(),
             'firstName' => $this->customer->getFirstName(),
             'lastName' => $this->customer->getLastName(),

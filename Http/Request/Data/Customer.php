@@ -48,7 +48,6 @@ class Customer extends Data
             'emailAddress' => $customerEmail,
             'gender' => $customer->getGender(),
             'birthDate' => $customer->getDob(),
-            'optIn' => $this->isCustomerSubscribedToNewsletter($customerId),
             'billingAddress' => $this->getAddress($customer->getDefaultBilling()),
             'shippingAddress' => $this->getAddress($customer->getDefaultShipping()),
             'isAnonymous' => false,
