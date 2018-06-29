@@ -3,6 +3,7 @@
 namespace Gracious\Interconnect\Api;
 
 use Gracious\Interconnect\Helper\Config;
+use Gracious\Interconnect\Reporting\Logger;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\App\Request\Http;
 use Magento\Newsletter\Model\Subscriber;
@@ -36,17 +37,23 @@ class Copernica implements CopernicaInterface
     private $subscriberFactory;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * @param Config $config
      * @param Http $request
      * @param CustomerRepositoryInterface $customerRepository
      * @param SubscriberFactory $subscriberFactory
      */
-    public function __construct(Config $config, Http $request, CustomerRepositoryInterface $customerRepository, SubscriberFactory $subscriberFactory)
+    public function __construct(Config $config, Http $request, CustomerRepositoryInterface $customerRepository, SubscriberFactory $subscriberFactory, Logger $logger)
     {
         $this->helperConfig = $config;
         $this->request = $request;
         $this->customerRepository = $customerRepository;
         $this->subscriberFactory = $subscriberFactory;
+        $this->logger = $logger;
     }
 
     /**
@@ -54,28 +61,34 @@ class Copernica implements CopernicaInterface
      */
     public function updateProfile(): bool
     {
-        if (!$this->usedCorrectSecret()) {
-            throw new \RuntimeException('Invalid or empty X-Secret sent');
-        }
+        try {
+            $data = '';
+            if (!$this->usedCorrectSecret()) {
+                throw new \RuntimeException('Invalid or empty X-Secret sent');
+            }
 
-        $data = json_decode($this->request->getContent(), true);
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new \RuntimeException(json_last_error_msg());
-        }
+            $data = json_decode($this->request->getContent(), true);
+            if (JSON_ERROR_NONE !== json_last_error()) {
+                throw new \RuntimeException(json_last_error_msg());
+            }
 
-        if ('update' !== $data['action']) {
-            throw new \RuntimeException('Only updates are accepted');
-        }
+            if ('update' !== $data['action']) {
+                throw new \RuntimeException('Only updates are accepted');
+            }
 
-        $subscriber = $this->subscriberFactory->create()->loadByEmail($data['fields']['email']);
-        if ((empty($data['fields']['newsletter']) || 'unsubscribed' === $data['fields']['newsletter']) && ($subscriber->getId() && Subscriber::STATUS_SUBSCRIBED == $subscriber->getSubscriberStatus())) {
-            $subscriber->unsubscribe($data['fields']['email']);
-            return true;
-        }
+            $subscriber = $this->subscriberFactory->create()->loadByEmail($data['fields']['email']);
+            if ((empty($data['fields']['newsletter']) || 'unsubscribed' === $data['fields']['newsletter']) && ($subscriber->getId() && Subscriber::STATUS_SUBSCRIBED == $subscriber->getSubscriberStatus())) {
+                $subscriber->unsubscribe($data['fields']['email']);
+                return true;
+            }
 
-        if (!empty($data['fields']['newsletter']) && 'subscribed' === $data['fields']['newsletter'] && Subscriber::STATUS_SUBSCRIBED !== $subscriber->getSubscriberStatus()) {
-            $subscriber->subscribe($data['fields']['email']);
-            return true;
+            if (!empty($data['fields']['newsletter']) && 'subscribed' === $data['fields']['newsletter'] && Subscriber::STATUS_SUBSCRIBED !== $subscriber->getSubscriberStatus()) {
+                $subscriber->subscribe($data['fields']['email']);
+                return true;
+            }
+
+        } catch (\Throwable $e) {
+            $this->logger->debug($e->getMessage(),[$data]);
         }
 
         return false;

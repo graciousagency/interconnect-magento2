@@ -115,6 +115,8 @@ class Client
             ->setHeaders($headers)
             ->setContent($json);
 
+        $this->logger->debug($json);
+
         $this->processResponse(
             $this->client->send($request)
         );
