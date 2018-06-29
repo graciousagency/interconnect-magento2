@@ -72,6 +72,10 @@ class Copernica implements CopernicaInterface
                 throw new \RuntimeException(json_last_error_msg());
             }
 
+            if (!is_array($data)) {
+                $this->logger->info('$data is not an array! - ' . $data);
+            }
+
             if ('update' !== $data['action']) {
                 $this->logger->info('Callback was not an update, ignoring it');
                 throw new \RuntimeException('Only updates are accepted');
@@ -94,7 +98,7 @@ class Copernica implements CopernicaInterface
             $this->logger->info('Nothing to do on update, update was not a subscribe or unsubscribe update');
 
         } catch (\Throwable $e) {
-            $this->logger->debug($e->getMessage(), [$data]);
+            $this->logger->exception($e);
         }
 
         return false;
