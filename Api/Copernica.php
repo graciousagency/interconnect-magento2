@@ -77,23 +77,24 @@ class Copernica implements CopernicaInterface
                 throw new \RuntimeException('Only updates are accepted');
             }
 
-            $subscriber = $this->subscriberFactory->create()->loadByEmail($data['fields']['email']);
+            $email = $data['profile']['fields']['email'];
+            $subscriber = $this->subscriberFactory->create()->loadByEmail($email);
             if ((empty($data['parameters']['newsletter']) || 'unsubscribed' === $data['parameters']['newsletter']) && ($subscriber->getId() && Subscriber::STATUS_SUBSCRIBED == $subscriber->getSubscriberStatus())) {
-                $this->logger->info('Unsubscribing '.$data['fields']['email']);
-                $subscriber->unsubscribe($data['fields']['email']);
+                $this->logger->info('Unsubscribing ' . $email);
+                $subscriber->unsubscribe($email);
                 return true;
             }
 
             if (!empty($data['parameters']['newsletter']) && 'subscribed' === $data['parameters']['newsletter'] && Subscriber::STATUS_SUBSCRIBED !== $subscriber->getSubscriberStatus()) {
-                $this->logger->info('Subscribing '.$data['fields']['email']);
-                $subscriber->subscribe($data['fields']['email']);
+                $this->logger->info('Subscribing ' . $email);
+                $subscriber->subscribe($email);
                 return true;
             }
 
             $this->logger->info('Nothing to do on update, update was not a subscribe or unsubscribe update');
 
         } catch (\Throwable $e) {
-            $this->logger->debug($e->getMessage(),[$data]);
+            $this->logger->debug($e->getMessage(), [$data]);
         }
 
         return false;
