@@ -84,7 +84,7 @@ class OrderItem extends Data
             'incrementId' => $order->getIncrementId(),
             'productId' => $this->generateEntityId($product->getId(), EntityType::PRODUCT),
             'productName' => $product->getName(),
-            'productSKU' => $product->getSku(),
+            'productSku' => $product->getSku(),
             'category' => $this->getCategoryNameByProduct($product),
             'subCategory' => null,
             'quantity' => (int)$orderItem->getQtyOrdered(),

@@ -101,7 +101,7 @@ class Quote extends Data
             'productId' => $this->generateEntityId($product->getId(), EntityType::PRODUCT),
             'incrementId' => null,
             'productName' => $product->getName(),
-            'sku' => $product->getSku(),
+            'productSku' => $product->getSku(),
             'category' => $this->getCategoryNameByProduct($product),
             'subcategory' => null,
             'quantity' => (int)$quoteItem->getQtyOrdered(),
